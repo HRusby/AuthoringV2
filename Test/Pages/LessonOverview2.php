@@ -122,10 +122,17 @@
       }
 
       function deleteOption($questionCount, $optionCount){
+
+        // run delete script via AJAX
+
+        $("#q"+$questionCount+"Opt"+$optionCount).html('');
+        $("#q"+$questionCount+"Opt"+$optionCount).remove();
+        updateOptionIndexes($questionCount, $optionCount);
         return false;
       }
 
       function deleteNewOption($questionCount, $optionCount){
+        // Run delete script via AJAX
         $("#q"+$questionCount+"Opt"+$optionCount).html('');
         $("#q"+$questionCount+"Opt"+$optionCount).remove();
         updateOptionIndexes($questionCount, $optionCount);
@@ -133,6 +140,9 @@
       }
 
       function deleteQuestion($questionCount){
+        $("#q"+$questionCount).html('');
+        $("#q"+$questionCount).remove();
+        updateQuestionIndexes($questionCount);
         return false;
       }
 
@@ -167,6 +177,9 @@
             // change id=q1Title name=q1Title
             $("#q"+$currentQuestion).find("#q"+$currentQuestion+'Title').attr('name', 'q'+$newValue+'Title');
             $("#q"+$currentQuestion).find("#q"+$currentQuestion+'Title').attr('id', 'q'+$newValue+'Title');
+            // change q1ID
+            $("#q"+$currentQuestion).find("#q".$currentQuestion."ID").attr('name', 'q'+$newValue+'Title');
+            $("#q"+$currentQuestion).find("#q".$currentQuestion."ID").attr('id', 'q'+$newValue+'Title');
             // change id=q1Lbl and value
             $("#q"+$currentQuestion).find("#q"+$currentQuestion+'Lbl').html($newValue);
             $("#q"+$currentQuestion).find("#q"+$currentQuestion+'Lbl').attr('id', 'q'+$newValue+'Lbl');
@@ -195,6 +208,9 @@
             // Change id: q1Opt1Value name: q1Opt1Value
             $("#q"+$currentQuestion+"Opt"+$currentOption).find('#q'+$currentQuestion+'Opt'+$currentOption+'Value').attr('name', 'q'+$intendedQuestion+'Opt'+$currentOption+'Value');
             $("#q"+$currentQuestion+"Opt"+$currentOption).find('#q'+$currentQuestion+'Opt'+$currentOption+'Value').attr('id', 'q'+$intendedQuestion+'Opt'+$currentOption+'Value');
+            // Update q1Opt1ID
+            $("#q"+$questionCount+"Opt"+$currentOption).find('#q'+$questionCount+'Opt'+$currentOption+'ID').attr('name', 'q'+$intendedQuestion+'Opt'+$currentOption+'ID');
+            $("#q"+$questionCount+"Opt"+$currentOption).find('#q'+$questionCount+'Opt'+$currentOption+'Value').attr('id', 'q'+$intendedQuestion+'Opt'+$currentOption+'ID');
             // Change q1Opt1RadButton
             $("#q"+$currentQuestion+"Opt"+$currentOption).find('#q'+$currentQuestion+'Opt'+$currentOption+'RadButton').attr('id', 'q'+$intendedQuestion+'Opt'+$currentOption+'RadButton');
             // Change q1Opt1Lbl Value as well
@@ -203,6 +219,7 @@
             // change q1Opt1
             $("#q"+$currentQuestion+"Opt"+$currentOption).attr('id', 'q'+$intendedQuestion+'Opt'+$currentOption);
             $currentOption++;
+            // q".$questionCount."Opt".$optionCount."ID
 
           }else{
             $optionsExist = false;
@@ -224,6 +241,9 @@
             // Change id: q1Opt1Value name: q1Opt1Value
             $("#q"+$questionCount+"Opt"+$currentOption).find('#q'+$questionCount+'Opt'+$currentOption+'Value').attr('name', 'q'+$questionCount+'Opt'+$newValue+'Value');
             $("#q"+$questionCount+"Opt"+$currentOption).find('#q'+$questionCount+'Opt'+$currentOption+'Value').attr('id', 'q'+$questionCount+'Opt'+$newValue+'Value');
+            // Update q1Opt1ID
+            $("#q"+$questionCount+"Opt"+$currentOption).find('#q'+$questionCount+'Opt'+$currentOption+'ID').attr('name', 'q'+$questionCount+'Opt'+$newValue+'ID');
+            $("#q"+$questionCount+"Opt"+$currentOption).find('#q'+$questionCount+'Opt'+$currentOption+'Value').attr('id', 'q'+$questionCount+'Opt'+$newValue+'ID');
             // Change q1Opt1RadButton
             $("#q"+$questionCount+"Opt"+$currentOption).find('#q'+$questionCount+'Opt'+$currentOption+'RadButton').attr('id', 'q'+$questionCount+'Opt'+$newValue+'RadButton');
             // Change q1Opt1Lbl Value as well
@@ -231,6 +251,7 @@
             $("#q"+$questionCount+"Opt"+$currentOption).find('#q'+$questionCount+'Opt'+$currentOption+'Lbl').attr('id', 'q'+$questionCount+'Opt'+$newValue+'Lbl')
             // change q1Opt1
             $("#q"+$questionCount+"Opt"+$currentOption).attr('id', 'q'+$questionCount+'Opt'+$newValue);
+
             $newValue++;
             $currentOption++;
             $("#q"+$questionCount+"AddOptionButton").attr("onclick", "return addOption("+$questionCount+", "+$newValue+");");

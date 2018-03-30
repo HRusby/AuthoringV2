@@ -111,6 +111,7 @@
                 echo "<input type='text' class='form-control' id='q".$questionCount."Title' name='q".$questionCount."Title' value='".$question['description']."' />";
                 // Add an appended delete button for the question.
                 echo "<div class='input-group-append'><button class='btn btn-danger' id='q".$questionCount."DeleteButton' onclick='return deleteQuestion(".$questionCount.");'><i class='fas fa-trash-alt'></i></button></div>";
+                echo "<input type='hidden' id='q".$questionCount."ID' name='q".$questionCount."ID' value='".$question['id']."'/>";
               echo "</div>"; // Close Title Input Group
               echo "<div class='form-group row w-100' id='q".$questionCount."Options'>";
               $optionCount = 1;
@@ -124,6 +125,7 @@
                     echo "<div class='input-group-append'>";
                       echo "<button class='btn btn-danger' id='q".$questionCount."Opt".$optionCount."DeleteButton' onclick='return deleteOption(".$questionCount.",".$optionCount.");'><i class='fas fa-trash-alt'></i></button>";
                     echo "</div>";
+                    echo "<input type='hidden' id='q".$questionCount."Opt".$optionCount."ID' name='q".$questionCount."Opt".$optionCount."ID' value='".$option['id']."'/>";
                     // echo "<input type='hidden' id='q".$questionCount."Opt".$optionCount."'/>";
                   echo "</div>"; // Close option input group
                   $optionCount++;
