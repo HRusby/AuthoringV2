@@ -9,6 +9,7 @@
         }else{
             $userid=$_SESSION['user_id'];
         }
+        $maxOptions = 6;
     ?>
 
     <!-- Required meta tags -->
@@ -77,6 +78,169 @@
           });
         }
       }
+
+      function addOption($questionCount, $optionCount){
+        if($optionCount > <?php echo $maxOptions; ?> ){
+          alert("No More Options can be added!");
+          return false;
+        }else{
+          $newOption = $optionCount+64;
+          $optionLbl = String.fromCharCode($newOption);
+          $("#q"+$questionCount+"Options").append("\
+            <div class='input-group col-md-11 ml-5 mt-2' id='q"+$questionCount+"Opt"+$optionCount+"'>\
+            <div class='input-group-prepend'>\
+            <span class='input-group-text' id='q"+$questionCount+"Opt"+$optionCount+"Lbl'>"+$optionLbl+"</span>\
+            <div class='input-group-text'><input type='radio' name='q"+$questionCount+"OptCorrect' id='q"+$questionCount+"Opt"+$optionCount+"RadButton'></div>\
+            </div>\
+            <input type='text' class='form-control' id='q"+$questionCount+"Opt"+$optionCount+"Value' name='q"+$questionCount+"Opt"+$optionCount+"Value' placeholder='Insert the Option'/>\
+            <div class='input-group-append'><button class='btn btn-danger' id='q"+$questionCount+"Opt"+$optionCount+"DeleteButton' onclick='return deleteNewOption("+$questionCount+","+$optionCount+");'><i class='fas fa-trash-alt'></i></button></div>\
+            </div>\
+          ");
+          $("#q"+$questionCount+"AddOptionButton").attr("onclick", "return addOption("+$questionCount+", "+($optionCount + 1)+");");
+          return false;
+        }
+
+      }
+
+      function addQuestion($questionCount){
+        $("#allQuestions").append("\
+        <div class='form-group row w-100' id='q"+$questionCount+"'>\
+          <div class='input-group col-md-12'>\
+            <div class='input-group-prepend'><span class='input-group-text' id='q"+$questionCount+"Lbl'>"+$questionCount+".</span></div>\
+            <input type='text' class='form-control' id='q"+$questionCount+"Title' name='q"+$questionCount+"Title' placeholder='Enter the Question!'/>\
+            <div class='input-group-append'><button class='btn btn-danger' id='q"+$questionCount+"DeleteButton' onclick='return deleteNewQuestion("+$questionCount+");'><i class='fas fa-trash-alt'></i></button></div>\
+          </div>\
+          <div class='form-group row w-100' id='q"+$questionCount+"Options'>\
+          </div>\
+          <div class='col-md-5'></div>\
+          <button class='btn btn-success col-md-2' id='q"+$questionCount+"AddOptionButton' onClick='return addOption("+$questionCount+",1);'>Add an Option!</button>\
+          <div class='col-md-5'></div>\
+          </div>\
+        ");
+        $("#addQuestionButton").attr("onclick", "return addQuestion("+($questionCount+1)+");");
+        return false;
+      }
+
+      function deleteOption($questionCount, $optionCount){
+        return false;
+      }
+
+      function deleteNewOption($questionCount, $optionCount){
+        $("#q"+$questionCount+"Opt"+$optionCount).html('');
+        $("#q"+$questionCount+"Opt"+$optionCount).remove();
+        updateOptionIndexes($questionCount, $optionCount);
+        return false;
+      }
+
+      function deleteQuestion($questionCount){
+        return false;
+      }
+
+      function deleteNewQuestion($questionCount){
+        $("#q"+$questionCount).html('');
+        $("#q"+$questionCount).remove();
+        updateQuestionIndexes($questionCount);
+        return false;
+      }
+
+      function updateQuestionIndexes($questionCount){
+        // $questionCount is the question that was deleted
+        $questionsExist = true;
+        $newValue = $questionCount; // First id becomes the deleted ID after which $newValue is incremented
+        $currentQuestion = $questionCount+1;
+        while($questionsExist){
+          if($('#q'+$currentQuestion).length){
+            // change every value in q1Options
+            updateOptionQuestion($currentQuestion, $newValue);
+
+            var y = $("#q"+$currentQuestion).find('#q'+$currentQuestion+'AddOptionButton').attr('onclick');
+            $part2 = y.substr(y.indexOf($currentQuestion)+1);
+            $("#q"+$currentQuestion+"AddOptionButton").attr("onclick", "return addOption("+$newValue+$part2);
+            $("#q"+$currentQuestion+"AddOptionButton").attr("id", "q"+$newValue+"AddOptionButton");
+            // change id=q1Options
+            $("#q"+$currentQuestion).find("#q"+$currentQuestion+'Options').attr('id', 'q'+$newValue+'Options');
+            // change id=q1DeleteButton onclick=return deleteQuestion(1);
+            var x = $("#q"+$currentQuestion).find('#q'+$currentQuestion+'DeleteButton').attr('onclick');
+            $part1 = x.substr(0, x.indexOf('(')+1);
+            $("#q"+$currentQuestion).find('#q'+$currentQuestion+'DeleteButton').attr('onclick', $part1+$newValue+');');
+            $("#q"+$currentQuestion).find('#q'+$currentQuestion+'DeleteButton').attr('id', 'q'+$newValue+'DeleteButton');
+            // change id=q1Title name=q1Title
+            $("#q"+$currentQuestion).find("#q"+$currentQuestion+'Title').attr('name', 'q'+$newValue+'Title');
+            $("#q"+$currentQuestion).find("#q"+$currentQuestion+'Title').attr('id', 'q'+$newValue+'Title');
+            // change id=q1Lbl and value
+            $("#q"+$currentQuestion).find("#q"+$currentQuestion+'Lbl').html($newValue);
+            $("#q"+$currentQuestion).find("#q"+$currentQuestion+'Lbl').attr('id', 'q'+$newValue+'Lbl');
+            // change id=q1
+            $("#q"+$currentQuestion).attr('id', 'q'+$newValue);
+
+            $newValue++;
+            $currentQuestion++;
+          }else{
+            $questionsExist=false;
+          }
+          // change addNewQuestionButton
+          $("#addQuestionButton").attr("onclick", "return addQuestion("+($newValue)+");");
+        }
+      }
+
+      function updateOptionQuestion($currentQuestion, $intendedQuestion){
+        $optionsExist = true;
+        $currentOption = 1;
+        while($optionsExist){
+          if($("#q"+$currentQuestion+"Opt"+$currentOption).length){
+            // Change id: q1Opt1DeleteButton onClick = return deleteOption(1,1);
+            var x = $("#q"+$currentQuestion+"Opt"+$currentOption).find('#q'+$currentQuestion+'Opt'+$currentOption+'DeleteButton').attr('onclick');
+            $part1 = x.substr(0, x.indexOf($currentQuestion));
+            $("#q"+$currentQuestion+"Opt"+$currentOption).find('#q'+$currentQuestion+'Opt'+$currentOption+'DeleteButton').attr('onclick', $part1+$intendedQuestion+', '+$currentOption+');');
+            // Change id: q1Opt1Value name: q1Opt1Value
+            $("#q"+$currentQuestion+"Opt"+$currentOption).find('#q'+$currentQuestion+'Opt'+$currentOption+'Value').attr('name', 'q'+$intendedQuestion+'Opt'+$currentOption+'Value');
+            $("#q"+$currentQuestion+"Opt"+$currentOption).find('#q'+$currentQuestion+'Opt'+$currentOption+'Value').attr('id', 'q'+$intendedQuestion+'Opt'+$currentOption+'Value');
+            // Change q1Opt1RadButton
+            $("#q"+$currentQuestion+"Opt"+$currentOption).find('#q'+$currentQuestion+'Opt'+$currentOption+'RadButton').attr('id', 'q'+$intendedQuestion+'Opt'+$currentOption+'RadButton');
+            // Change q1Opt1Lbl Value as well
+            $("#q"+$currentQuestion+"Opt"+$currentOption).find('#q'+$currentQuestion+'Opt'+$currentOption+'Lbl').html(String.fromCharCode($currentOption+64));
+            $("#q"+$currentQuestion+"Opt"+$currentOption).find('#q'+$currentQuestion+'Opt'+$currentOption+'Lbl').attr('id', 'q'+$intendedQuestion+'Opt'+$currentOption+'Lbl');
+            // change q1Opt1
+            $("#q"+$currentQuestion+"Opt"+$currentOption).attr('id', 'q'+$intendedQuestion+'Opt'+$currentOption);
+            $currentOption++;
+
+          }else{
+            $optionsExist = false;
+          }
+        }
+      }
+
+      function updateOptionIndexes($questionCount, $optionCount){
+        // $questionCount = The question whose options are being updated, $optionCount = the option that was deleted
+        $optionsExist = true;
+        $newValue = $optionCount; // First id becomes the deleted ID after which $newValue is incremented
+        $currentOption = $optionCount+1;
+        while($optionsExist){
+          if($("#q"+$questionCount+"Opt"+$currentOption).length){
+            // Change id: q1Opt1DeleteButton onClick = return deleteOption(1,1);
+            var x = $("#q"+$questionCount+"Opt"+$currentOption).find('#q'+$questionCount+'Opt'+$currentOption+'DeleteButton').attr('onclick');
+            $part1 = x.substr(0, x.indexOf(',')+1);
+            $("#q"+$questionCount+"Opt"+$currentOption).find('#q'+$questionCount+'Opt'+$currentOption+'DeleteButton').attr('onclick', $part1+$newValue+');');
+            // Change id: q1Opt1Value name: q1Opt1Value
+            $("#q"+$questionCount+"Opt"+$currentOption).find('#q'+$questionCount+'Opt'+$currentOption+'Value').attr('name', 'q'+$questionCount+'Opt'+$newValue+'Value');
+            $("#q"+$questionCount+"Opt"+$currentOption).find('#q'+$questionCount+'Opt'+$currentOption+'Value').attr('id', 'q'+$questionCount+'Opt'+$newValue+'Value');
+            // Change q1Opt1RadButton
+            $("#q"+$questionCount+"Opt"+$currentOption).find('#q'+$questionCount+'Opt'+$currentOption+'RadButton').attr('id', 'q'+$questionCount+'Opt'+$newValue+'RadButton');
+            // Change q1Opt1Lbl Value as well
+            $("#q"+$questionCount+"Opt"+$currentOption).find('#q'+$questionCount+'Opt'+$currentOption+'Lbl').html(String.fromCharCode($newValue+64));
+            $("#q"+$questionCount+"Opt"+$currentOption).find('#q'+$questionCount+'Opt'+$currentOption+'Lbl').attr('id', 'q'+$questionCount+'Opt'+$newValue+'Lbl')
+            // change q1Opt1
+            $("#q"+$questionCount+"Opt"+$currentOption).attr('id', 'q'+$questionCount+'Opt'+$newValue);
+            $newValue++;
+            $currentOption++;
+            $("#q"+$questionCount+"AddOptionButton").attr("onclick", "return addOption("+$questionCount+", "+$newValue+");");
+          }else{
+            $optionsExist = false;
+          }
+
+        }
+      }
+
     </script>
     <title>LessonOverview2</title>
   </head>
