@@ -1,0 +1,14 @@
+body {
+   	background:url('tile.png');
+		background-color: #cccccc;
+    margin-top:50px;
+}
+
+#listView{
+  overflow-x:scroll;
+  overflow-y: scroll;
+}
+
+.clickable{
+  cursor: pointer;
+}

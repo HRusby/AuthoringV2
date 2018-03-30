@@ -1,0 +1,94 @@
+.userModules{
+	background-color: #FEFEFE;
+	/* border-style: solid; */
+}
+
+h1, h2, h3, h4, h5, h6{
+	color:#18B193;
+}
+
+/* .postTitle{
+
+}
+
+.moduleDescription{
+
+}
+
+.moduleTagsLabel{
+
+}
+
+button{
+
+} */
+
+body {
+   	background:url('tile.png');
+		background-color: #cccccc;
+}
+
+/* .btn-minimize.btn-plus{background-color:green;
+padding:6px;}
+.btn-minimize{background-color:red;
+padding:6px;} */
+/* using jquery to toggle class btn-plus allows the minimise/maximise button css to change */
+
+.outlined{
+	outline-style: solid;
+	/* padding: 10px; */
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+.buttonRow{
+	background-color: #666666;
+}
+
+.modButtonRow{
+	margin-left: 0px;
+	margin-right:0px;
+}
+/*
+.TopicListLevel{
+	border-style: solid;
+	padding: 10px;
+	margin-bottom: 10px;
+}
+.tll1{
+	background-color: #7cc9af;
+	border-style: solid;
+}
+.tll2{
+	background-color: #5aa88e;
+}
+.tll3{
+	background-color: #46f4ba;
+}
+.tll4{
+	background-color: #1ace92;
+}
+.tll5{
+	background-color: #337743;
+}
+
+.topicTitleLevel{
+
+}
+
+.topicDescriptionLevel{
+
+}
+
+.tagsList{
+
+}
+/*
+Each of the above can have a specific level called using
+the initials of the class and the level wanted.
+*/
+
+/* .topicTagsLabel{ */
+
+/* }  */
+/* The above can have a number of levels depending on what sub-list it is */
