@@ -1,7 +1,7 @@
 <?php
     session_start();
     ini_set("default_charset", 'utf-8');
-    $postID = $_GET['t'];
+    $postID = $_POST['id'];
     // $query = "DELETE FROM tpl_post WHERE id=".$postID.";";
     $db = new mysqli("localhost", "root", "topolor", "topolor");
     $db->set_charset("utf8");

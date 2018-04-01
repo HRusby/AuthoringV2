@@ -28,6 +28,9 @@
 
   $db->close();
 
+  $rules = '';
+  $messages = '';
+
   // echo "<div class='row'>";
   echo "<div class='row h-100 justify-content-center align-items-center my-3'>";
   echo "<form class='w-75 bg-white border border-light p-3' method='POST' action='../PHP/updateModule2.php?m=".$moduleID."' id='moduleUpdateForm'>";
@@ -38,5 +41,35 @@
   echo "<div class='btn-group'><button class='btn btn-primary' type='submit'>Update Module</button></div>";
   echo "</form>";
   echo "</div>"; // Close row container
+
+  $rules .= "moduleTitle: 'required'";
+  $messages .= "moduleTitle: 'Please input a Title for this Module'";
+
+  $rules .= "moduleContent: 'required'";
+  $messages .= "moduleContent: 'Please input some Content for this Module'";
+
+  $rules .= "tokenField: 'required'";
+  $messages .= "tokenField: 'Please input at least One Tag for this Module'";
+
+  echo "<script>";
+    echo "var validator = $('#lessonForm').validate({
+        ignore:'',
+        rules: {
+            ".$rules."
+        },
+        messages: {
+            ".$messages."
+        },
+        errorPlacement: function(error, element){
+            if(element.is('input:radio')){
+                error.insertAfter(element.parent().parent());
+            }else{
+                error.insertAfter(element.parent());
+            }
+        }
+    });";
+    echo "$.validator.messages.required = 'Select a correct answer!';";
+    echo "});";
+  echo "</script>";
 
 ?>

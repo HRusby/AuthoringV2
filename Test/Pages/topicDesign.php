@@ -101,6 +101,7 @@
 					}
 					return true;
 				}
+
 		</script>
 
 		<?php

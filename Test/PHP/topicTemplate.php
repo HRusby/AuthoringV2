@@ -35,6 +35,9 @@
   $prereqStmt->execute();
   $prereqResult = $prereqStmt->get_result();
 
+  $rules = '';
+  $messages = '';
+
   echo "<div class='row h-100 justify-content-center align-items-center my-3'>";
   if($parentID == $moduleID){
     echo "<form class='w-75 bg-white border border-light p-3' method='POST' action='../PHP/createTopic2.php' id='topicCreateForm'>";

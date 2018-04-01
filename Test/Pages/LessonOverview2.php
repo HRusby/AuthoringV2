@@ -23,6 +23,7 @@
     <script defer src="https://use.fontawesome.com/releases/v5.0.9/js/all.js" integrity="sha384-8iPTk2s/jMVj81dnzb/iFR2sdA7u06vHJyyLlAd4snFpCl/SnyUjRrbdJsw1pGIl" crossorigin="anonymous"></script>
     <script src="../JS/slipTreeTokenField/dist/bootstrap-tokenfield.js"></script>
     <script src="../JS/jquery-ui/jquery-ui.js"></script>
+    <script type='text/javascript' src='../JS/jquery-validation-1.17.0/dist/jquery.validate.js'></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.css">
     <link rel="stylesheet" type="text/css" href="../CSS/LessonOverview.css">
@@ -34,8 +35,6 @@
       });
 
       $(document).on('submit', '#moduleUpdateForm', function(){
-        // alert("Submitting");
-        // alert("Action:"+$(this).attr('action'));
         $newModuleTitle = $(this).find('#moduleTitle').val();
         $newModuleContent = $(this).find('#moduleContent').val();
         $tags = $(this).find('#tokenField').val();
@@ -104,8 +103,17 @@
             type:$(this).attr('method'),
             data: $dataString,
             success:function($result){
-                alert($result);
                 alert("New Topic Saved!");
+                $loadURL = "../PHP/loadListView.php?u="+<?php echo $userid; ?>;
+                $.ajax({
+                    url:$loadURL,
+                    success:function($result){
+                        $("#listView").html($result);
+                    },
+                    error: function(xhr, textstatus, errorthrown){
+                      alert('Error\nState: '+xhr.readyState+'\nStatus: '+textstatus+'\nError: '+errorthrown);
+                    }
+                });
             },
             error: function(xhr, textstatus, errorthrown){
               alert('Error\nState: '+xhr.readyState+'\nStatus: '+textstatus+'\nError: '+errorthrown);
@@ -114,6 +122,47 @@
         return false;
       });
 
+      $(document).on('submit', '#moduleCreateForm', function(){
+        alert('In moduleCreateForm Submit');
+        $rules = '';
+        $messages = '';
+        $rules = "moduleTitle: 'required'";
+        $messages = "moduleTitle: 'Please input a Title for this Module'";
+
+        // $rules += ",moduleContent: 'required'";
+        // $messages += ",moduleContent: 'Please input some Content for this Module'";
+        //
+        // $rules += ",tokenField: 'required'";
+        // $messages += ",tokenField: 'Please input at least One Tag for this Module'";
+        // var validator = $('#moduleCreateForm').validate({
+        //     ignore:'',
+        //     rules: {
+        //         $rules
+        //     },
+        //     messages: {
+        //         $messages
+        //     }
+        // });
+
+        $newModuleTitle = $(this).find('#moduleTitle').val();
+        $newModuleContent = $(this).find('#moduleContent').val();
+        $tags = $(this).find('#tokenField').val();
+        $dataString = 'moduleTitle='+$newModuleTitle+'&moduleContent='+$newModuleContent+'&tags='+$tags;
+        // alert($dataString);
+        // $.ajax({
+        //     url:$(this).attr('action'),
+        //     type:$(this).attr('method'),
+        //     data: $dataString,
+        //     success:function($result){
+        //         alert($result);
+        //         alert("Updated!");
+        //     },
+        //     error: function(xhr, textstatus, errorthrown){
+        //       alert('Error\nState: '+xhr.readyState+'\nStatus: '+textstatus+'\nError: '+errorthrown);
+        //     }
+        // });
+        return false;
+      });
 
       function loadTopic($id, $category){
         if($category == 0){
@@ -134,10 +183,6 @@
           });
         }
       }
-
-      function saveTopic(){}
-
-      function createTopic(){}
 
       function saveModule(){}
 
@@ -163,6 +208,25 @@
             data: $dataString,
             success:function($result){
                 $("#actionPanel").html($result);
+                $('#topicCreateForm').validate({
+                  rules:{
+                    topicTitle: 'required',
+                    topicContent: 'required',
+                    tokenField: 'required'
+                  },
+                  messages:{
+                    topicTitle: 'Please enter a title for the module',
+                    topicContent: 'Please enter some Content for the Module!',
+                    tokenField: 'Please enter at least one token for the module!'
+                  },
+                  errorPlacement: function(error, element){
+  										if(element.attr('id') == 'tokenField'){
+  												error.insertAfter(element.parent());
+  										}else{
+  												error.insertAfter(element.parent());
+  										}
+  								}
+                });
             },
             error: function(xhr, textstatus, errorthrown){
               alert('Error\nState: '+xhr.readyState+'\nStatus: '+textstatus+'\nError: '+errorthrown);
@@ -170,7 +234,43 @@
         });
       }
 
-      function deleteTopic($parentID, $parentTitle, $moduleID){}
+      function deleteTopic($topicID, $topicTitle, $moduleID){
+        $dataString='id='+$topicID;
+        $.ajax({
+            url:"../PHP/deletePost.php",
+            type: 'POST',
+            data: $dataString,
+            success:function($result){
+                $("#"+$topicTitle+"Row").html('');
+                $("#"+$topicTitle+"Row").remove();
+                $("#"+$topicTitle+"TopicList").html('');
+                $("#"+$topicTitle+"TopicList").remove();
+                alert("Topic Deleted!");
+            },
+            error: function(xhr, textstatus, errorthrown){
+              alert('Error\nState: '+xhr.readyState+'\nStatus: '+textstatus+'\nError: '+errorthrown);
+            }
+        });
+      }
+
+      function deleteModule($moduleID, $moduleTitle, $moduleCount){
+        $dataString='id='+$moduleID;
+        $.ajax({
+            url:"../PHP/deletePost.php",
+            type: 'POST',
+            data: $dataString,
+            success:function($result){
+                $("#module"+$moduleCount).html('');
+                $("#module"+$moduleCount).remove();
+                $("#"+$moduleTitle+"TopicList").html('');
+                $("#"+$moduleTitle+"TopicList").remove();
+                alert("Module Deleted!");
+            },
+            error: function(xhr, textstatus, errorthrown){
+              alert('Error\nState: '+xhr.readyState+'\nStatus: '+textstatus+'\nError: '+errorthrown);
+            }
+        });
+      }
 
       function addOption($questionCount, $optionCount){
         if($optionCount > <?php echo $maxOptions; ?> ){
@@ -385,73 +485,11 @@
         }
       }
 
+
+
     </script>
     <title>LessonOverview2</title>
   </head>
-  <?php
-    function printTopics($root, $level, $parentID){
-      $db = new mysqli("localhost", "root", "topolor", "topolor");
-      $db->set_charset("utf8");
-      // Need to get parent relations
-      if($parentID == $root){
-          $topicIDQuery = "SELECT * FROM tpl_tutorial_topic WHERE root = ? AND level = ?;";
-          $topicIDStmt = $db->stmt_init();
-          $topicIDStmt->prepare($topicIDQuery);
-          $topicIDStmt->bind_param("ii", $root, $level);
-          $topicIDStmt->execute();
-          $IDResult = $topicIDStmt->get_result();
-      }else{
-          $parentRelationQuery = "SELECT * FROM tpl_tutorial_topic WHERE topic_id = ?;";
-          $parentRelationStmt = $db->stmt_init();
-          $parentRelationStmt->prepare($parentRelationQuery);
-          $parentRelationStmt->bind_param("i", $parentID);
-          $parentRelationStmt->execute();
-          $parentRelationR = $parentRelationStmt->get_result();
-          $parentRelationResult = $parentRelationR->fetch_assoc();
-          $plft = $parentRelationResult['lft'];
-          $prgt = $parentRelationResult['rgt'];
-          $topicIDQuery = "SELECT * FROM tpl_tutorial_topic WHERE root = ? AND level = ? AND lft > ? AND rgt < ?;";
-          $topicIDStmt = $db->stmt_init();
-          $topicIDStmt->prepare($topicIDQuery);
-          $topicIDStmt->bind_param("iiii", $root, $level, $plft, $prgt);
-          $topicIDStmt->execute();
-          $IDResult = $topicIDStmt->get_result();
-      }
-      // Find the set of topic IDs
-      while($id = $IDResult->fetch_assoc()){
-
-        $topicDataQuery = "SELECT * FROM `tpl_post` WHERE `id` = ?;";
-        $topicDataStmt = $db->stmt_init();
-        $topicDataStmt->prepare($topicDataQuery);
-        $topicDataStmt->bind_param("i", $id['topic_id']);
-        $topicDataStmt->execute();
-        $topicResult = $topicDataStmt->get_result();
-
-        while($topic = $topicResult->fetch_assoc()){
-          $topicTitle = str_replace(" ", "",$topic['title']);
-
-          echo "<div class='row ml-3 my-2 w-100' id='".$topicTitle."Row'>";
-            echo "<div class='input-group pr-1'>";
-              echo "<div class='input-group-prepend'>";
-                echo "<button data-toggle='collapse' data-target='#".$topicTitle."TopicList' aria-expanded='false'  class = 'btn btn-sm collapseButton pull-left'><i class='fas fa-angle-right'></i></button>";
-              echo "</div>"; // Close input group prepend
-              echo "<div class='w-50 bg-dark clickable pl-1' style='color:white;' onclick='loadTopic(".$topic['id'].", ".$topic['category'].")'>".strip_tags($topic['title'])."</div>";
-              echo "<div class='input-group-append'>";
-                echo "<button class='btn btn-sm btn-success' id='".$topicTitle."AddTopicButton' onclick='return addTopic(".$topic['id'].",\"".$topicTitle."\", ".$root.");'><i class='fas fa-plus'></i></button>";
-                echo "<button class='btn btn-sm btn-danger' id='".$topicTitle."DeleteButton' onclick='return deleteTopic(".$topic['id'].", ".$topicTitle.", ".$root.");'><i class='fas fa-trash-alt'></i></button>";
-              echo "</div>"; // Close input group append
-            echo "</div>"; // Close input group
-          echo "</div>"; // Close module row Div
-          echo "<div class='row collapse ml-3' id='".$topicTitle."TopicList' aria-expanded='false'>";
-            printTopics($root, $level+1, $topic['id']); // Prints out all of the modules topics.
-          // Pass' the current ID, the level it's looking at (second level) and the parent ID as this is top level the parent ID is it's own ID
-          echo "</div>"; // close moduleTitleTopicList Div.
-        }
-      }
-      $db->close();
-    }
-  ?>
-
   <body>
     <nav class="navbar navbar-dark bg-dark fixed-top border-bottom border-light">
       <span class="navbar-brand mb-0 h1">Topolor</span>
@@ -459,40 +497,19 @@
     <div class='container-fluid' id='authoringContainer'>
       <div class='row' id='bodyContainer'>
         <div class='col-md-3 h-100 px-1 border-right border-dark bg-dark position-fixed' id ='listView'>
-          <?php
-            $db = new mysqli("localhost", "root", "topolor", "topolor");
-            $db->set_charset("utf8");
-            $ModulesQuery = "SELECT * FROM tpl_post WHERE user_id=? AND category=0;";
-            $ModulesStmt = $db->stmt_init();
-            $ModulesStmt->prepare($ModulesQuery);
-            $ModulesStmt->bind_param("i", $userid);
-            $ModulesStmt->execute();
-            $ModulesResult=$ModulesStmt->get_result();
-            $moduleCount = 0;
-            while($module = $ModulesResult->fetch_assoc()){
-              // Create a row for this module, expand to load in all subtopics
-              $moduleTitle = str_replace(" ", "",$module['title']);
-              echo "<div class='row ml-3 my-2' id='module".$moduleCount."'>";
-                echo "<div class='input-group pr-1'>";
-                  echo "<div class='input-group-prepend'>";
-                    echo "<button data-toggle='collapse' data-target='#".$moduleTitle."TopicList' aria-expanded='false'  class = 'btn btn-sm collapseButton pull-left'><i class='fas fa-angle-right'></i></button>";
-                  echo "</div>"; // Close input group prepend
-                  echo "<div class='w-50 bg-dark clickable pl-1' style='color:white;' onclick='loadTopic(".$module['id'].", ".$module['category'].")'>".strip_tags($module['title'])."</div>";
-                  echo "<div class='input-group-append'>";
-                    echo "<button class='btn btn-sm btn-success' id='".$moduleTitle."AddTopicButton' onclick='return addTopic(".$module['id'].",\"".$moduleTitle."\", ".$module['id'].");'><i class='fas fa-plus'></i></button>";
-                    echo "<button class='btn btn-sm btn-danger' id='".$moduleTitle."DeleteButton' onclick='return deleteModule(".$module['id'].", ".$moduleTitle.");'><i class='fas fa-trash-alt'></i></button>";
-                  echo "</div>";
-                echo "</div>"; // Close input group
-              echo "</div>"; // Close module row Div
-              echo "<div class='row collapse ml-3' id='".$moduleTitle."TopicList' aria-expanded='false'>";
-              printTopics($module['id'], 2, $module['id']); // Prints out all of the modules topics.
-              // Pass' the current ID, the level it's looking at (second level) and the parent ID as this is top level the parent ID is it's own ID
-              echo "</div>"; // close moduleTitleTopicList Div.
-              $moduleCount++;
-            }
-            echo "<button class='btn btn-success id='addModuleButton' onclick='return addModule();'>Create A Module!</button>";
-            $db->close();
-          ?>
+          <script>
+            $loadURL = "../PHP/loadListView.php?u="+<?php echo $userid; ?>;
+            $.ajax({
+                url:$loadURL,
+                success:function($result){
+                    $("#listView").html($result);
+                },
+                error: function(xhr, textstatus, errorthrown){
+                  alert('Error\nState: '+xhr.readyState+'\nStatus: '+textstatus+'\nError: '+errorthrown);
+                }
+            });
+          </script>
+
         </div>
 
         <div class='col-md-9 offset-md-3' id='actionPanel'>

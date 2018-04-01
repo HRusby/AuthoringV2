@@ -43,6 +43,9 @@
   $prereqStmt->execute();
   $prereqResult = $prereqStmt->get_result();
 
+  $rules = '';
+  $messages = '';
+
   // echo "<div class='row'>";
   echo "<ul class='nav nav-tabs' id='questionContentTabs' role='tablist'>";
   echo "<li class='nav-item'>";
