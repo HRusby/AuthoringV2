@@ -1,7 +1,6 @@
 <?php
     session_start();
     ini_set("default_charset", 'utf-8');
-    echo "Test";
     $questionID = $_GET['q'];
     echo $questionID;
     $db = new mysqli("localhost", "root", "topolor", "topolor");
@@ -11,7 +10,7 @@
     $deleteOptionsStmt->prepare($deleteOptionsQuery);
     $deleteOptionsStmt->bind_param("i", $questionID);
     $deleteOptionsStmt->execute();
-    
+
     $DeleteQuestionQuery = "DELETE FROM tpl_question WHERE id = ?;";
     $DeleteQuestionStmt = $db->stmt_init();
     $DeleteQuestionStmt->prepare($DeleteQuestionQuery);

@@ -30,7 +30,7 @@
 
   // echo "<div class='row'>";
   echo "<div class='row h-100 justify-content-center align-items-center my-3'>";
-  echo "<form class='w-75' method='POST' action='../PHP/updateModule2.php?m=".$moduleID."' id='postForm'>";
+  echo "<form class='w-75 bg-white border border-light p-3' method='POST' action='../PHP/updateModule2.php?m=".$moduleID."' id='moduleUpdateForm'>";
   echo "<div class='form-group'><label for='moduleTitle'>Module Title:</label><input type='text' class ='form-control' value='".$module['title']."' id='moduleTitle' name='moduleTitle'/></div>";
   echo "<div class='form-group'><label for='moduleContent'>Module Content:</label><textarea class='form-control' id='moduleContent' name='moduleContent' style='resize:vertical;'>".$module['description']."</textarea></div>";
   echo "<div class='form-group'><label for='tokenField'>Tags:</label><input type='text' class='form-control' id='tokenField' name='tokenField' value='".$module['tags']."' /></div>";

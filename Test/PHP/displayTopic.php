@@ -57,9 +57,9 @@
   echo "<div class='tab-content' id='tabContent'>";
     echo "<div class='tab-pane fade show active' id='edit' role='tabpanel' aria-labelledby='editTab'>";
       echo "<div class='row h-100 justify-content-center align-items-center my-3'>";
-        echo "<form class='w-75 bg-white border border-light p-3' method='POST' action='../PHP/updateTopic2.php?m=".$topicID."' id='postForm'>";
-          echo "<div class='form-group'><label for='moduleTitle'>Module Title:</label><input type='text' class ='form-control bg-light' value='".$topic['title']."' id='moduleTitle' name='moduleTitle'/></div>";
-          echo "<div class='form-group'><label for='moduleContent'>Module Content:</label><textarea class='form-control bg-light' id='moduleContent' name='moduleContent' style='resize:vertical;'>".$topic['description']."</textarea></div>";
+        echo "<form class='w-75 bg-white border border-light p-3' method='POST' action='../PHP/updateTopic2.php?t=".$topicID."' id='topicUpdateForm'>";
+          echo "<div class='form-group'><label for='topicTitle'>Topic Title:</label><input type='text' class ='form-control bg-light' value='".$topic['title']."' id='topicTitle' name='topicTitle'/></div>";
+          echo "<div class='form-group'><label for='topicContent'>Topic Content:</label><textarea class='form-control bg-light' id='topicContent' name='topicContent' style='resize:vertical;'>".$topic['description']."</textarea></div>";
           echo "<div class='form-group'><label for='tokenField'>Tags:</label><input type='text' class='form-control bg-light' id='tokenField' name='tokenField' value='".$topic['tags']."' /></div>";
           echo "<script>$('#tokenField').tokenfield({autocomplete: {source: [".$tags."], delay: 100}, showAutocompleteOnFocus: true})</script>";
           echo "<div class='form-group'><label for='prerequisites'>Prerequisite?</label><select class='form-control bg-light' name='prereqs' id ='prereqs'>";

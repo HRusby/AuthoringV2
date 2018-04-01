@@ -33,7 +33,7 @@
         $('[data-toggle="tooltip"]').tooltip();
       });
 
-      $(document).on('submit', '#postForm', function(){
+      $(document).on('submit', '#moduleUpdateForm', function(){
         // alert("Submitting");
         // alert("Action:"+$(this).attr('action'));
         $newModuleTitle = $(this).find('#moduleTitle').val();
@@ -56,6 +56,65 @@
         return false;
       });
 
+      $(document).on('submit', '#topicUpdateForm', function(){
+        // alert("Submitting");
+        // alert("Action:"+$(this).attr('action'));
+        $newTopicTitle = $(this).find('#topicTitle').val();
+        $newTopicContent = $(this).find('#topicContent').val();
+        $tags = $(this).find('#tokenField').val();
+        if($(this).find("#optional").is(":checked")){
+          $optional = 1;
+        }else{
+          $optional = 0;
+        }
+        $prerequisite = $(this).find('#prereqs').val();
+        $dataString = 'topicTitle='+$newTopicTitle+'&topicContent='+$newTopicContent+'&tags='+$tags+'&prereqs='+$prerequisite+'&optional='+$optional;
+        // alert($dataString);
+        $.ajax({
+            url:$(this).attr('action'),
+            type:$(this).attr('method'),
+            data: $dataString,
+            success:function($result){
+                alert($result);
+                alert("Updated!");
+            },
+            error: function(xhr, textstatus, errorthrown){
+              alert('Error\nState: '+xhr.readyState+'\nStatus: '+textstatus+'\nError: '+errorthrown);
+            }
+        });
+        return false;
+      });
+
+      $(document).on('submit', '#topicCreateForm', function(){
+        $topicTitle = $(this).find('#topicTitle').val();
+        $topicContent = $(this).find('#topicContent').val();
+        $tags = $(this).find('#tokenField').val();
+        $parentID = $(this).find('#parentID').val();
+        $root = $(this).find('#moduleID').val();
+        if($(this).find("#optional").is(":checked")){
+          $optional = 1;
+        }else{
+          $optional = 0;
+        }
+        $prerequisite = $(this).find('#prereqs').val();
+        $dataString = "topicTitle="+$topicTitle+"&topicContent="+$topicContent+"&tags="+$tags+"&prereqs="+$prerequisite+"&optional="+$optional+"&parentID="+$parentID+"&root="+$root;
+        // alert($dataString);
+        $.ajax({
+            url:$(this).attr('action'),
+            type:$(this).attr('method'),
+            data: $dataString,
+            success:function($result){
+                alert($result);
+                alert("New Topic Saved!");
+            },
+            error: function(xhr, textstatus, errorthrown){
+              alert('Error\nState: '+xhr.readyState+'\nStatus: '+textstatus+'\nError: '+errorthrown);
+            }
+        });
+        return false;
+      });
+
+
       function loadTopic($id, $category){
         if($category == 0){
           // Load module
@@ -71,13 +130,47 @@
               url:"../PHP/displayTopic.php?t="+$id,
               success:function($result){
                   $("#actionPanel").html($result);
-                  // $('.nav-tabs a').click(function(){
-                  //     $(this).tab('show');
-                  // })
               }
           });
         }
       }
+
+      function saveTopic(){}
+
+      function createTopic(){}
+
+      function saveModule(){}
+
+      function createModule(){}
+
+      function addModule(){
+        $.ajax({
+            url:"../PHP/moduleTemplate.php",
+            success:function($result){
+                $("#actionPanel").html($result);
+            },
+            error: function(xhr, textstatus, errorthrown){
+              alert('Error\nState: '+xhr.readyState+'\nStatus: '+textstatus+'\nError: '+errorthrown);
+            }
+        });
+      }
+
+      function addTopic($parentID, $parentTitle, $moduleID){
+        $dataString = 'parentID='+$parentID+'&parentTitle='+$parentTitle+'&moduleID='+$moduleID;
+        $.ajax({
+            url:"../PHP/topicTemplate.php",
+            type: 'POST',
+            data: $dataString,
+            success:function($result){
+                $("#actionPanel").html($result);
+            },
+            error: function(xhr, textstatus, errorthrown){
+              alert('Error\nState: '+xhr.readyState+'\nStatus: '+textstatus+'\nError: '+errorthrown);
+            }
+        });
+      }
+
+      function deleteTopic($parentID, $parentTitle, $moduleID){}
 
       function addOption($questionCount, $optionCount){
         if($optionCount > <?php echo $maxOptions; ?> ){
@@ -123,11 +216,25 @@
 
       function deleteOption($questionCount, $optionCount){
 
+        $optionID = $("#q"+$questionCount+"Opt"+$optionCount).find("#q"+$questionCount+"Opt"+$optionCount+"ID").attr('value');
+        // alert("OptionID: "+$optionID);
         // run delete script via AJAX
+        $.ajax({
+            url:"../PHP/deleteExistingOption.php?o="+$optionID,
+            success:function($result){
+                alert("Option has been successfully deleted!");
+                // alert($result);
+                $("#q"+$questionCount+"Opt"+$optionCount).html('');
+                $("#q"+$questionCount+"Opt"+$optionCount).remove();
+                updateOptionIndexes($questionCount, $optionCount);
+                return false;
+            },
+            error: function(xhr, textstatus, errorthrown){
+              alert('Error\nState: '+xhr.readyState+'\nStatus: '+textstatus+'\nError: '+errorthrown);
+              return false;
+            }
+        });
 
-        $("#q"+$questionCount+"Opt"+$optionCount).html('');
-        $("#q"+$questionCount+"Opt"+$optionCount).remove();
-        updateOptionIndexes($questionCount, $optionCount);
         return false;
       }
 
@@ -140,9 +247,25 @@
       }
 
       function deleteQuestion($questionCount){
-        $("#q"+$questionCount).html('');
-        $("#q"+$questionCount).remove();
-        updateQuestionIndexes($questionCount);
+
+        $questionID = $("#q"+$questionCount).find("#q"+$questionCount+"ID").attr('value');
+        alert("questionID: "+$questionID);
+        // run delete script via AJAX
+        $.ajax({
+            url:"../PHP/deleteExistingQuestion.php?q="+$questionID,
+            success:function($result){
+                alert("Question has been successfully deleted!");
+                // alert($result);
+                $("#q"+$questionCount).html('');
+                $("#q"+$questionCount).remove();
+                updateQuestionIndexes($questionCount);
+                return false;
+            },
+            error: function(xhr, textstatus, errorthrown){
+              alert('Error\nState: '+xhr.readyState+'\nStatus: '+textstatus+'\nError: '+errorthrown);
+              return false;
+            }
+        });
         return false;
       }
 
@@ -178,8 +301,8 @@
             $("#q"+$currentQuestion).find("#q"+$currentQuestion+'Title').attr('name', 'q'+$newValue+'Title');
             $("#q"+$currentQuestion).find("#q"+$currentQuestion+'Title').attr('id', 'q'+$newValue+'Title');
             // change q1ID
-            $("#q"+$currentQuestion).find("#q".$currentQuestion."ID").attr('name', 'q'+$newValue+'Title');
-            $("#q"+$currentQuestion).find("#q".$currentQuestion."ID").attr('id', 'q'+$newValue+'Title');
+            $("#q"+$currentQuestion).find("#q"+$currentQuestion+"ID").attr('name', 'q'+$newValue+'Title');
+            $("#q"+$currentQuestion).find("#q"+$currentQuestion+"ID").attr('id', 'q'+$newValue+'Title');
             // change id=q1Lbl and value
             $("#q"+$currentQuestion).find("#q"+$currentQuestion+'Lbl').html($newValue);
             $("#q"+$currentQuestion).find("#q"+$currentQuestion+'Lbl').attr('id', 'q'+$newValue+'Lbl');
@@ -209,8 +332,8 @@
             $("#q"+$currentQuestion+"Opt"+$currentOption).find('#q'+$currentQuestion+'Opt'+$currentOption+'Value').attr('name', 'q'+$intendedQuestion+'Opt'+$currentOption+'Value');
             $("#q"+$currentQuestion+"Opt"+$currentOption).find('#q'+$currentQuestion+'Opt'+$currentOption+'Value').attr('id', 'q'+$intendedQuestion+'Opt'+$currentOption+'Value');
             // Update q1Opt1ID
-            $("#q"+$questionCount+"Opt"+$currentOption).find('#q'+$questionCount+'Opt'+$currentOption+'ID').attr('name', 'q'+$intendedQuestion+'Opt'+$currentOption+'ID');
-            $("#q"+$questionCount+"Opt"+$currentOption).find('#q'+$questionCount+'Opt'+$currentOption+'Value').attr('id', 'q'+$intendedQuestion+'Opt'+$currentOption+'ID');
+            $("#q"+$currentQuestion+"Opt"+$currentOption).find('#q'+$currentQuestion+'Opt'+$currentOption+'ID').attr('name', 'q'+$intendedQuestion+'Opt'+$currentOption+'ID');
+            $("#q"+$currentQuestion+"Opt"+$currentOption).find('#q'+$currentQuestion+'Opt'+$currentOption+'Value').attr('id', 'q'+$intendedQuestion+'Opt'+$currentOption+'ID');
             // Change q1Opt1RadButton
             $("#q"+$currentQuestion+"Opt"+$currentOption).find('#q'+$currentQuestion+'Opt'+$currentOption+'RadButton').attr('id', 'q'+$intendedQuestion+'Opt'+$currentOption+'RadButton');
             // Change q1Opt1Lbl Value as well
@@ -308,11 +431,19 @@
           $topicTitle = str_replace(" ", "",$topic['title']);
 
           echo "<div class='row ml-3 my-2 w-100' id='".$topicTitle."Row'>";
-          echo "<button data-toggle='collapse' data-target='#".$topicTitle."TopicList' aria-expanded='false'  class = 'collapseButton pull-left'><i class='fas fa-angle-right'></i></button>";
-          echo "<div class='w-75 bg-dark clickable' onclick='loadTopic(".$topic['id'].", ".$topic['category'].")'>".strip_tags($topic['title'])."</div>";
+            echo "<div class='input-group pr-1'>";
+              echo "<div class='input-group-prepend'>";
+                echo "<button data-toggle='collapse' data-target='#".$topicTitle."TopicList' aria-expanded='false'  class = 'btn btn-sm collapseButton pull-left'><i class='fas fa-angle-right'></i></button>";
+              echo "</div>"; // Close input group prepend
+              echo "<div class='w-50 bg-dark clickable pl-1' style='color:white;' onclick='loadTopic(".$topic['id'].", ".$topic['category'].")'>".strip_tags($topic['title'])."</div>";
+              echo "<div class='input-group-append'>";
+                echo "<button class='btn btn-sm btn-success' id='".$topicTitle."AddTopicButton' onclick='return addTopic(".$topic['id'].",\"".$topicTitle."\", ".$root.");'><i class='fas fa-plus'></i></button>";
+                echo "<button class='btn btn-sm btn-danger' id='".$topicTitle."DeleteButton' onclick='return deleteTopic(".$topic['id'].", ".$topicTitle.", ".$root.");'><i class='fas fa-trash-alt'></i></button>";
+              echo "</div>"; // Close input group append
+            echo "</div>"; // Close input group
           echo "</div>"; // Close module row Div
           echo "<div class='row collapse ml-3' id='".$topicTitle."TopicList' aria-expanded='false'>";
-          printTopics($root, $level+1, $topic['id']); // Prints out all of the modules topics.
+            printTopics($root, $level+1, $topic['id']); // Prints out all of the modules topics.
           // Pass' the current ID, the level it's looking at (second level) and the parent ID as this is top level the parent ID is it's own ID
           echo "</div>"; // close moduleTitleTopicList Div.
         }
@@ -327,7 +458,7 @@
     </nav>
     <div class='container-fluid' id='authoringContainer'>
       <div class='row' id='bodyContainer'>
-        <div class='col-md-3 h-100 px-1 border-right border-dark bg-light position-fixed' id ='listView'>
+        <div class='col-md-3 h-100 px-1 border-right border-dark bg-dark position-fixed' id ='listView'>
           <?php
             $db = new mysqli("localhost", "root", "topolor", "topolor");
             $db->set_charset("utf8");
@@ -342,8 +473,16 @@
               // Create a row for this module, expand to load in all subtopics
               $moduleTitle = str_replace(" ", "",$module['title']);
               echo "<div class='row ml-3 my-2' id='module".$moduleCount."'>";
-                echo "<button data-toggle='collapse' data-target='#".$moduleTitle."TopicList' aria-expanded='false'  class = 'collapseButton pull-left'><i class='fas fa-angle-right'></i></button>";
-                echo "<div class='w-75 bg-dark clickable' onclick='loadTopic(".$module['id'].", ".$module['category'].")'>".strip_tags($module['title'])."</div>";
+                echo "<div class='input-group pr-1'>";
+                  echo "<div class='input-group-prepend'>";
+                    echo "<button data-toggle='collapse' data-target='#".$moduleTitle."TopicList' aria-expanded='false'  class = 'btn btn-sm collapseButton pull-left'><i class='fas fa-angle-right'></i></button>";
+                  echo "</div>"; // Close input group prepend
+                  echo "<div class='w-50 bg-dark clickable pl-1' style='color:white;' onclick='loadTopic(".$module['id'].", ".$module['category'].")'>".strip_tags($module['title'])."</div>";
+                  echo "<div class='input-group-append'>";
+                    echo "<button class='btn btn-sm btn-success' id='".$moduleTitle."AddTopicButton' onclick='return addTopic(".$module['id'].",\"".$moduleTitle."\", ".$module['id'].");'><i class='fas fa-plus'></i></button>";
+                    echo "<button class='btn btn-sm btn-danger' id='".$moduleTitle."DeleteButton' onclick='return deleteModule(".$module['id'].", ".$moduleTitle.");'><i class='fas fa-trash-alt'></i></button>";
+                  echo "</div>";
+                echo "</div>"; // Close input group
               echo "</div>"; // Close module row Div
               echo "<div class='row collapse ml-3' id='".$moduleTitle."TopicList' aria-expanded='false'>";
               printTopics($module['id'], 2, $module['id']); // Prints out all of the modules topics.
@@ -351,6 +490,7 @@
               echo "</div>"; // close moduleTitleTopicList Div.
               $moduleCount++;
             }
+            echo "<button class='btn btn-success id='addModuleButton' onclick='return addModule();'>Create A Module!</button>";
             $db->close();
           ?>
         </div>

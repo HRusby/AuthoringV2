@@ -22,7 +22,7 @@
     if($existStmt->get_result()->num_rows == 0){
         $lft = 0;
         $rgt = 1;
-        echo "<script>alert(\"num_rows = 0\");</script>";
+        // echo "<script>alert(\"num_rows = 0\");</script>";
     }else{
         $maxQuery = "SELECT MAX(rgt) AS rgt FROM tpl_tutorial_topic WHERE root = ?;";
         $maxStmt = $db->stmt_init();
@@ -41,13 +41,13 @@
     }else{
         $opt = 0;
     }
-    echo "opt: ".$opt."<br>";
-    echo "lft: ".$lft."<br>";
-    echo "rgt: ".$rgt."<br>";
-    echo "prerequirements: ".$prereqs."<br>";
+    // echo "opt: ".$opt."<br>";
+    // echo "lft: ".$lft."<br>";
+    // echo "rgt: ".$rgt."<br>";
+    // echo "prerequirements: ".$prereqs."<br>";
 
 
-    $tagArray = explode(',',$tags);
+    $tagArray = explode(', ',$tags);
     // Separate the tagId list into individual names so its frequency can be updated
 
     foreach($tagArray as $t){
