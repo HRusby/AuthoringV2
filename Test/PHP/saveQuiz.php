@@ -1,5 +1,3 @@
-
-
 <?php
 // Post values: qTitle(questionCount), qID(questionCount) -- won't exist for some counts as new ids won't have it
 //              q(questionCount)OptOrder(optionCount), q(Count)Opt(optionCount), q(count)OptCorrect
@@ -9,6 +7,7 @@
     $userid = $_SESSION['user_id'];
     $t = true;
     $questionCount = 1;
+    echo $_POST['q1OptCorrect'];
     while($t == true){
         if(isset($_POST['qTitle'.$questionCount])){
             // Establishes whether a question for this number exists
@@ -91,7 +90,7 @@
             $t = false;
         }
     }
-    header('location:../Pages/LessonOverview.php');
+    // header('location:../Pages/LessonOverview.php');
     // TODO: for each question determine if it's new or to be updated (if qID(count) isset)
     // TODO: For each question determine the number of options and store/update them.
     //              update if they exist already (will need a select query)

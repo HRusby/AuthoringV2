@@ -57,7 +57,6 @@
       $tagExistsStmt->bind_param("s", $t);
       $tagExistsStmt->execute();
       $tagExistsResult = $tagExistsStmt->get_result();
-      echo "After TagExists";
       if(mysqli_num_rows($tagExistsResult) > 0){
 
         $freqQuery = "UPDATE tpl_tag SET frequency=frequency+1 WHERE name=?;";
@@ -67,8 +66,6 @@
         $freqStmt->bind_param('s', $t);
         $freqStmt->execute();
       }else{
-        echo "Tag doesn't exist";
-        echo "\n tag: ".$t;
         $addNewTagQuery = "INSERT INTO tpl_tag VALUES (NULL, ?, ?, '1', CURRENT_TIMESTAMP, NULL);";
         $addNewTagStmt = $db->stmt_init();
         $addNewTagStmt->prepare($addNewTagQuery);
@@ -92,7 +89,6 @@
   // New entry to tpl_post for the topic record
 
   if($prereqs == '-1'){
-      echo "is -1<br>";
       $db = new mysqli("localhost", "root", "topolor", "topolor");
       $db->set_charset("utf8");
       $relationQuery = "INSERT INTO tpl_tutorial_topic VALUES (?, ?, ?, ?, '2', ?, NULL);";
@@ -111,7 +107,7 @@
       $db->close();
       // If no prereqs then enter a record into tpl_tutorial_topic with the prereqs as NULL
   }else{
-      echo "not -1<br>";
+      // echo "not -1<br>";
       $db = new mysqli("localhost", "root", "topolor", "topolor");
       $db->set_charset("utf8");
       $relationQuery = "INSERT INTO tpl_tutorial_topic VALUES (?, ?, ?, ?, '2', ?, ?);";

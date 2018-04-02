@@ -46,6 +46,7 @@
   }
       echo "<input type='hidden' id='parentID' value='".$parentID."'/>";
       echo "<input type='hidden' id='moduleID' value='".$moduleID."'/>";
+      echo "<input type='hidden' id='parentTitle' value='".$parentTitle."'/>";
       echo "<div class='form-group'><label for='topicTitle'>Topic Title:</label><input type='text' class ='form-control bg-light' placeholder='Enter a Title!' id='topicTitle' name='topicTitle'/></div>";
       echo "<div class='form-group'><label for='topicContent'>Topic Content:</label><textarea class='form-control bg-light' id='topicContent' name='topicContent' placeholder='Add Some Content!' style='resize:vertical;'></textarea></div>";
       echo "<div class='form-group'><label for='tokenField'>Tags:</label><input type='text' placeholder='Select an item or type some text and hit enter!' class='form-control bg-light' id='tokenField' name='tokenField' value='' /></div>";
@@ -70,5 +71,23 @@
       echo "<div class='btn-group'><button class='btn btn-primary' type='submit'>Create Topic</button></div>";
     echo "</form>";
   echo "</div>"; // Close row container
+  $editRules="topicTitle: 'required', topicContent: 'required', tokenField: 'required'";
+  $editMessages = "topicTitle: 'Please enter a title for the module', topicContent: 'Please enter some Content for the Module!', tokenField: 'Please enter at least one token for the module!'";
+  // Validation rules and messages for the edit tab
+
+  echo "<script>";
+  echo "$('#topicCreateForm').validate({";
+    echo "rules:{".$editRules."},";
+    echo "messages:{".$editMessages."},";
+    echo "errorPlacement: function(error, element){";
+    echo "    if(element.attr('id') == 'tokenField'){";
+    echo "        error.insertAfter(element.parent());";
+    echo "    }else{";
+    echo "        error.insertAfter(element.parent());";
+    echo "    }";
+    echo "}";
+  echo "});";
+
+  echo "</script>";
 
 ?>

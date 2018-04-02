@@ -24,11 +24,16 @@
     <script src="../JS/slipTreeTokenField/dist/bootstrap-tokenfield.js"></script>
     <script src="../JS/jquery-ui/jquery-ui.js"></script>
     <script type='text/javascript' src='../JS/jquery-validation-1.17.0/dist/jquery.validate.js'></script>
+    <link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote.css" rel="stylesheet">
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote.js"></script>
+
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.0/jquery-confirm.min.css">
-    <link rel="stylesheet" type="text/css" href="../CSS/LessonOverview.css">
+
     <link rel="stylesheet" type="text/css" href="../JS/slipTreeTokenField/dist/css/bootstrap-tokenfield.css">
     <link rel="stylesheet" type="text/css" href="../JS/jquery-ui/jquery-ui.css">
+
+    <link rel="stylesheet" type="text/css" href="../CSS/LessonOverview.css">
     <script>
       $(document).ready(function(){
         $('[data-toggle="tooltip"]').tooltip();
@@ -56,8 +61,6 @@
       });
 
       $(document).on('submit', '#topicUpdateForm', function(){
-        // alert("Submitting");
-        // alert("Action:"+$(this).attr('action'));
         $newTopicTitle = $(this).find('#topicTitle').val();
         $newTopicContent = $(this).find('#topicContent').val();
         $tags = $(this).find('#tokenField').val();
@@ -74,7 +77,7 @@
             type:$(this).attr('method'),
             data: $dataString,
             success:function($result){
-                alert($result);
+                // alert($result);
                 alert("Updated!");
             },
             error: function(xhr, textstatus, errorthrown){
@@ -89,6 +92,7 @@
         $topicContent = $(this).find('#topicContent').val();
         $tags = $(this).find('#tokenField').val();
         $parentID = $(this).find('#parentID').val();
+        $parentTitle = $(this).find('#parentTitle').val();
         $root = $(this).find('#moduleID').val();
         if($(this).find("#optional").is(":checked")){
           $optional = 1;
@@ -103,16 +107,18 @@
             type:$(this).attr('method'),
             data: $dataString,
             success:function($result){
-                alert("New Topic Saved!");
-                $loadURL = "../PHP/loadListView.php?u="+<?php echo $userid; ?>;
+                $.alert("New Topic Saved!");
+                // $.alert($result);
                 $.ajax({
-                    url:$loadURL,
-                    success:function($result){
-                        $("#listView").html($result);
-                    },
-                    error: function(xhr, textstatus, errorthrown){
-                      alert('Error\nState: '+xhr.readyState+'\nStatus: '+textstatus+'\nError: '+errorthrown);
-                    }
+                  url:"../PHP/loadNewTopic.php",
+                  type:'POST',
+                  data: 'id='+$result+'&root='+$root,
+                  success: function($topicDisplay){
+                    $('#'+$parentTitle+'TopicList').append($topicDisplay);
+                  },
+                  error: function(xhr, textstatus, errorthrown){
+                    alert('Error\nState: '+xhr.readyState+'\nStatus: '+textstatus+'\nError: '+errorthrown);
+                  }
                 });
             },
             error: function(xhr, textstatus, errorthrown){
@@ -123,44 +129,56 @@
       });
 
       $(document).on('submit', '#moduleCreateForm', function(){
-        alert('In moduleCreateForm Submit');
-        $rules = '';
-        $messages = '';
-        $rules = "moduleTitle: 'required'";
-        $messages = "moduleTitle: 'Please input a Title for this Module'";
-
-        // $rules += ",moduleContent: 'required'";
-        // $messages += ",moduleContent: 'Please input some Content for this Module'";
-        //
-        // $rules += ",tokenField: 'required'";
-        // $messages += ",tokenField: 'Please input at least One Tag for this Module'";
-        // var validator = $('#moduleCreateForm').validate({
-        //     ignore:'',
-        //     rules: {
-        //         $rules
-        //     },
-        //     messages: {
-        //         $messages
-        //     }
-        // });
-
         $newModuleTitle = $(this).find('#moduleTitle').val();
         $newModuleContent = $(this).find('#moduleContent').val();
         $tags = $(this).find('#tokenField').val();
         $dataString = 'moduleTitle='+$newModuleTitle+'&moduleContent='+$newModuleContent+'&tags='+$tags;
-        // alert($dataString);
-        // $.ajax({
-        //     url:$(this).attr('action'),
-        //     type:$(this).attr('method'),
-        //     data: $dataString,
-        //     success:function($result){
-        //         alert($result);
-        //         alert("Updated!");
-        //     },
-        //     error: function(xhr, textstatus, errorthrown){
-        //       alert('Error\nState: '+xhr.readyState+'\nStatus: '+textstatus+'\nError: '+errorthrown);
-        //     }
-        // });
+        $('#actionPanel').html('');
+        // Empty panel to prevent user from spamming the create button
+        $.ajax({
+            url:$(this).attr('action'),
+            type:$(this).attr('method'),
+            data: $dataString,
+            success:function($result){
+                alert("Module Created!");
+                // Empty the actionPanel
+                alert($result);
+                $.ajax({
+                  url:"../PHP/loadNewModule.php",
+                  type:'POST',
+                  data: 'id='+$result,
+                  success: function($topicDisplay){
+                    $('#allModules').append($topicDisplay);
+                  },
+                  error: function(xhr, textstatus, errorthrown){
+                    alert('Error\nState: '+xhr.readyState+'\nStatus: '+textstatus+'\nError: '+errorthrown);
+                  }
+                });
+            },
+            error: function(xhr, textstatus, errorthrown){
+              alert('Error\nState: '+xhr.readyState+'\nStatus: '+textstatus+'\nError: '+errorthrown);
+            }
+        });
+
+        return false;
+      });
+
+      $(document).on('submit', '#quizForm', function(){
+        alert('Submitting Quiz');
+        $.ajax({
+            url:$(this).attr('action'),
+            type:$(this).attr('method'),
+            data: "'x=0&"+$(this).serialize()+"'",
+            success:function($result){
+                alert("Quiz Saved!");
+                alert($result);
+
+            },
+            error: function(xhr, textstatus, errorthrown){
+              alert('Error\nState: '+xhr.readyState+'\nStatus: '+textstatus+'\nError: '+errorthrown);
+            }
+        });
+
         return false;
       });
 
@@ -184,10 +202,6 @@
         }
       }
 
-      function saveModule(){}
-
-      function createModule(){}
-
       function addModule(){
         $.ajax({
             url:"../PHP/moduleTemplate.php",
@@ -200,7 +214,7 @@
         });
       }
 
-      function addTopic($parentID, $parentTitle, $moduleID){
+      function addTopic($parentID, $parentTitle, $moduleID, $parentCount){
         $dataString = 'parentID='+$parentID+'&parentTitle='+$parentTitle+'&moduleID='+$moduleID;
         $.ajax({
             url:"../PHP/topicTemplate.php",
@@ -245,7 +259,7 @@
                 $("#"+$topicTitle+"Row").remove();
                 $("#"+$topicTitle+"TopicList").html('');
                 $("#"+$topicTitle+"TopicList").remove();
-                alert("Topic Deleted!");
+                $.alert("Topic Deleted!");
             },
             error: function(xhr, textstatus, errorthrown){
               alert('Error\nState: '+xhr.readyState+'\nStatus: '+textstatus+'\nError: '+errorthrown);
@@ -253,18 +267,18 @@
         });
       }
 
-      function deleteModule($moduleID, $moduleTitle, $moduleCount){
+      function deleteModule($moduleID, $moduleTitle){
         $dataString='id='+$moduleID;
         $.ajax({
             url:"../PHP/deletePost.php",
             type: 'POST',
             data: $dataString,
             success:function($result){
-                $("#module"+$moduleCount).html('');
-                $("#module"+$moduleCount).remove();
+                $("#"+$moduleTitle+"Row").html('');
+                $("#"+$moduleTitle+"Row").remove();
                 $("#"+$moduleTitle+"TopicList").html('');
                 $("#"+$moduleTitle+"TopicList").remove();
-                alert("Module Deleted!");
+                $.alert("Module Deleted!");
             },
             error: function(xhr, textstatus, errorthrown){
               alert('Error\nState: '+xhr.readyState+'\nStatus: '+textstatus+'\nError: '+errorthrown);
@@ -485,8 +499,6 @@
         }
       }
 
-
-
     </script>
     <title>LessonOverview2</title>
   </head>
@@ -517,5 +529,6 @@
         </div>
       </div>
     </div>
+
   </body>
 </html>

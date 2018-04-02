@@ -142,9 +142,6 @@
     	<link rel="stylesheet" type="text/css" href="../CSS/BasicLessonOverview.css">
     	<script>
           $(document).ready(function(){
-            // $('.collapseButton').on('shown.bs.collapse', function(){
-            //   $(this).find(".glyphicon").toggleClass("glyphicon-chevron-down glyphicon-chevron-right");
-            // })
             $('[data-toggle="tooltip"]').tooltip();
         	});
 		</script>

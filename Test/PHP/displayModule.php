@@ -45,31 +45,24 @@
   $rules .= "moduleTitle: 'required'";
   $messages .= "moduleTitle: 'Please input a Title for this Module'";
 
-  $rules .= "moduleContent: 'required'";
-  $messages .= "moduleContent: 'Please input some Content for this Module'";
+  $rules .= ", moduleContent: 'required'";
+  $messages .= ", moduleContent: 'Please input some Content for this Module'";
 
-  $rules .= "tokenField: 'required'";
-  $messages .= "tokenField: 'Please input at least One Tag for this Module'";
+  $rules .= ", tokenField: 'required'";
+  $messages .= ", tokenField: 'Please input at least One Tag for this Module'";
 
   echo "<script>";
-    echo "var validator = $('#lessonForm').validate({
-        ignore:'',
-        rules: {
-            ".$rules."
-        },
-        messages: {
-            ".$messages."
-        },
-        errorPlacement: function(error, element){
-            if(element.is('input:radio')){
-                error.insertAfter(element.parent().parent());
-            }else{
-                error.insertAfter(element.parent());
-            }
-        }
-    });";
-    echo "$.validator.messages.required = 'Select a correct answer!';";
-    echo "});";
+  echo "$('#moduleUpdateForm').validate({";
+    echo "rules:{".$rules."},";
+    echo "messages:{".$messages."},";
+    echo "errorPlacement: function(error, element){";
+    echo "    if(element.attr('id') == 'tokenField'){";
+    echo "        error.insertAfter(element.parent());";
+    echo "    }else{";
+    echo "        error.insertAfter(element.parent());";
+    echo "    }";
+    echo "}";
+  echo "});";
   echo "</script>";
 
 ?>

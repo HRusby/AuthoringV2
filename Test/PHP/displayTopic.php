@@ -43,9 +43,6 @@
   $prereqStmt->execute();
   $prereqResult = $prereqStmt->get_result();
 
-  $rules = '';
-  $messages = '';
-
   // echo "<div class='row'>";
   echo "<ul class='nav nav-tabs' id='questionContentTabs' role='tablist'>";
   echo "<li class='nav-item'>";
@@ -86,9 +83,13 @@
         echo "</form>";
       echo "</div>"; // Close row container
     echo "</div>"; // Close editTab div
+
+    $quizRules='';
+    $quizMessages='';
+
     echo "<div class='tab-pane fade' id='quiz' role='tabpanel' aria-labelledby='quizTab'>";
       echo "<div class='row h-100 justify-content-center align-items-center my-3'>";
-        echo "<form class='w-75 bg-white border border-light p-4' method='POST' id='quizForm'>";
+        echo "<form class='w-75 bg-white border border-light p-4' method='POST' action='../PHP/saveQuiz2.php?t=".$topicID."' id='quizForm'>";
           echo "<h2>".$topic['title']."</h2>";
           // Load all questions for this topic
           $topicQuestionQuery = "SELECT * FROM tpl_question WHERE topic_id=?;";
@@ -112,8 +113,17 @@
                 // Add a prepended label for the question
                 echo "<div class='input-group-prepend'><span class='input-group-text' id='q".$questionCount."Lbl'>".$questionCount.".</span></div>";
                 echo "<input type='text' class='form-control' id='q".$questionCount."Title' name='q".$questionCount."Title' value='".$question['description']."' />";
+                if($quizRules == ''){
+                  $quizRules .= "q".$questionCount."Title: 'required'";
+                  $quizMessages .= "q".$questionCount."Title: 'Please enter a title for the question!'";
+                }else{
+                  $quizRules .= ", q".$questionCount."Title: 'required'";
+                  $quizMessages .= ", q".$questionCount."Title: 'Please enter a title for the question!'";
+                }
                 // Add an appended delete button for the question.
-                echo "<div class='input-group-append'><button class='btn btn-danger' id='q".$questionCount."DeleteButton' onclick='return deleteQuestion(".$questionCount.");'><i class='fas fa-trash-alt'></i></button></div>";
+                echo "<div class='input-group-append'><button type='button' class='btn btn-danger' id='q".$questionCount."DeleteButton' ";
+                echo "onclick='$.confirm({title: \"Are You Sure?\", content: \"Deletion can not been undone\", buttons: {confirm: function() {return deleteQuestion(".$questionCount.");}, cancel: function(){ $.alert(\"Cancelled\");}}});'";
+                echo "><i class='fas fa-trash-alt'></i></button></div>";
                 echo "<input type='hidden' id='q".$questionCount."ID' name='q".$questionCount."ID' value='".$question['id']."'/>";
               echo "</div>"; // Close Title Input Group
               echo "<div class='form-group row w-100' id='q".$questionCount."Options'>";
@@ -122,20 +132,35 @@
                   echo "<div class='input-group col-md-11 col-md-offset-1 ml-5 mt-2' id='q".$questionCount."Opt".$optionCount."'>";
                     echo "<div class='input-group-prepend'>";
                       echo "<span class='input-group-text' id='q".$questionCount."Opt".$optionCount."Lbl'>".$option['opt']."</span>";
-                      echo "<div class='input-group-text'><input type='radio' name='q".$questionCount."OptCorrect' id='q".$questionCount."Opt".$optionCount."RadButton'></div>";
+                      echo "<div class='input-group-text'><input type='radio' name='q".$questionCount."OptCorrect' id='q".$questionCount."Opt".$optionCount."RadButton' value='".$option['opt']."'";
+                      if($question['correct_answer'] == $option['opt']){
+                        echo "checked='checked'";
+                      }
+                      echo "></div>";
+                      echo "<input type='hidden' id='q".$questionCount."OptOrder".$optionCount."' name='q".$questionCount."OptOrder".$optionCount."' value='".$option['opt']."'/>";
                     echo "</div>";
                     echo "<input type='text' class='form-control' id='q".$questionCount."Opt".$optionCount."Value' name='q".$questionCount."Opt".$optionCount."Value' value='".$option['val']."' />";
+
+                    $quizRules .= ", q".$questionCount."Opt".$optionCount."Value: 'required'";
+                    $quizMessages .= ", q".$questionCount."Opt".$optionCount."Value: 'Please enter a title for the Option!'";
+                    // Add validation rule and message for the current option
+
                     echo "<div class='input-group-append'>";
-                      echo "<button class='btn btn-danger' id='q".$questionCount."Opt".$optionCount."DeleteButton' onclick='return deleteOption(".$questionCount.",".$optionCount.");'><i class='fas fa-trash-alt'></i></button>";
+                      echo "<button type='button' class='btn btn-sm btn-danger' id='q".$questionCount."Opt".$optionCount."DeleteButton' ";
+                      echo "onclick='$.confirm({title: \"Are You Sure?\", content: \"Deletion can not been undone\", buttons: {confirm: function() {return deleteOption(".$questionCount.",".$optionCount.");}, cancel: function(){ $.alert(\"Cancelled\");}}});'";
+                      echo "><i class='fas fa-trash-alt'></i></button>";
                     echo "</div>";
                     echo "<input type='hidden' id='q".$questionCount."Opt".$optionCount."ID' name='q".$questionCount."Opt".$optionCount."ID' value='".$option['id']."'/>";
                     // echo "<input type='hidden' id='q".$questionCount."Opt".$optionCount."'/>";
                   echo "</div>"; // Close option input group
                   $optionCount++;
                 }
+                $quizRules .= ", q".$questionCount."OptCorrect: 'required'";
+                $quizMessages .= ", q".$questionCount."OptCorrect: 'Please Select a Correct Answer for the Question'";
+                // Add validation rule and message for the radiobutton set of this questions options
               echo "</div>"; // Close question Options Div
               echo "<div class='col-md-5'></div>";
-              echo "<button class='btn btn-success col-md-2' id='q".$questionCount."AddOptionButton' onClick='return addOption(".$questionCount.",".$optionCount.");'>Add an Option!</button>";
+              echo "<button type='button' class='btn btn-success col-md-2' id='q".$questionCount."AddOptionButton' onClick='return addOption(".$questionCount.",".$optionCount.");'>Add an Option!</button>";
               echo "<div class='col-md-5'></div>";
             echo "</div>"; // Close form-group row
             $questionCount++;
@@ -143,11 +168,58 @@
           echo "</div>"; // Close allQuestions div
 
           echo "<div class='form-group text-center'>";
-            echo "<button class='btn btn-success' id='addQuestionButton' onclick='return addQuestion(".$questionCount.");'>Add a Question!</button>";
+            echo "<button class='btn btn-success' type='button' id='addQuestionButton' onclick='return addQuestion(".$questionCount.");'>Add a Question!</button>";
+            echo "<button class='btn btn-success' type='submit' id='saveQuizButton'>Save Quiz</button>";
           echo "</div>";
         echo "</form>";
       echo "</div>";
     echo "</div>";
   echo "</div>"; // Close tabContent div
+
+  $editRules="topicTitle: 'required', topicContent: 'required', tokenField: 'required'";
+  $editMessages = "topicTitle: 'Please enter a title for the module', topicContent: 'Please enter some Content for the Module!', tokenField: 'Please enter at least one token for the module!'";
+  // Validation rules and messages for the edit tab
+
+  echo "<script>";
+  echo "var updateValidator = $('#topicUpdateForm').validate({";
+    echo "rules:{".$editRules."},";
+    echo "messages:{".$editMessages."},";
+    echo "errorPlacement: function(error, element){";
+
+    echo "    if(element.attr('id') == 'tokenField'){";
+    echo "        error.insertAfter(element.parent());";
+    echo "    }else{";
+    echo "        error.insertAfter(element.parent());";
+    echo "    }";
+    echo "},";
+    echo "ignore: \":hidden:not(#topicContent),.note-editable.panel-body\"";
+  echo "});";
+
+  echo "$('#quizForm').validate({";
+    echo "rules:{".$quizRules."},";
+    echo "messages:{".$quizMessages."},";
+    echo "errorPlacement: function(error, element){";
+    echo "    error.addClass('form-group ml-2');";
+    echo "    if(element.attr('id') == 'tokenField'){";
+    echo "        error.insertAfter(element.parent());";
+    echo "    }else if(element.is('input:radio')){";
+    echo "        error.insertAfter(element.parent().parent().parent().parent().parent());";
+    echo "    }else{";
+    echo "        error.insertAfter(element.parent());";
+    echo "    }";
+    echo "}";
+  echo "});";
+
+  echo "var myElement = $('#topicContent');";
+  echo "myElement.summernote({";
+    echo "callbacks: {";
+      echo "onChange: function(contents, $editable) {";
+        echo "myElement.val(myElement.summernote('isEmpty') ? \"\" : contents);";
+        echo "updateValidator.element(myElement);";
+      echo "}";
+    echo "}";
+  echo "});";
+  echo "</script>";
+
   $db->close();
 ?>

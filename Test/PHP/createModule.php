@@ -8,7 +8,7 @@
     $content = htmlspecialchars($_POST['mDesc']);
     $tags = htmlspecialchars($_POST['tags']);
     $tagArray = explode(',',$tags);
-    echo "Content: ".$content;
+    // echo "Content: ".$content;
     // Separate the tagId list into individual names so its frequency can be updated
     $db = new mysqli("localhost", "root", "topolor", "topolor");
     $db->set_charset("utf8");
