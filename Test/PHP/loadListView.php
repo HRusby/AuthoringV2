@@ -55,7 +55,7 @@
         echo "<div class='row ml-3 my-2 w-100 topics".$parentID."' style='height:50px;' id='".$topicTitle."Row'>";
           echo "<div class='input-group pr-1'>";
             echo "<div class='input-group-prepend'>";
-              echo "<button data-toggle='collapse' data-target='#".$topicTitle."TopicList' aria-expanded='false'  class = 'btn collapseButton pull-left'><i class='fas fa-angle-right'></i></button>";
+              echo "<button data-toggle='collapse' data-target='#".$topicTitle."TopicList' aria-expanded='false'  class = 'btn btn-sm collapseButton pull-left'><i class='fas fa-angle-right'></i></button>";
               echo "<input type='hidden' class='listTopicID".$parentID."' value='".$topic['id']."'/>";
             echo "</div>"; // Close input group prepend
             echo "<div class='input-group-btn btn-group-vertical'>

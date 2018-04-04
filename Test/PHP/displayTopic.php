@@ -170,6 +170,45 @@
             echo "</div>"; // Close form-group row
             $questionCount++;
           }
+          if($questionCount == 1){
+            // echo "Question Count is 1";
+            echo "<div class='form-group row w-100' id='q".$questionCount."'>
+              <div class='input-group col-md-12'>
+                <div class='input-group-prepend'><span class='input-group-text' id='q".$questionCount."Lbl'>".$questionCount.".</span></div>
+                <input type='text' class='form-control' id='q".$questionCount."Title' name='q".$questionCount."Title' placeholder='Enter the Question!'/>
+                <div class='input-group-append'><button type='button' class='btn btn-danger' id='q".$questionCount."DeleteButton'
+                onclick=\'$.confirm({title: \"Are You Sure?\", content: \"Deletion can not been undone\", buttons: {confirm: function() {deleteNewQuestion(".$questionCount.");}, cancel: function(){ $.alert(\"Cancelled\");}}});'>
+                <i class='fas fa-trash-alt'></i></button></div>
+              </div>
+              <div class='form-group row w-100' id='q".$questionCount."Options'>
+                <div class='input-group col-md-11 ml-5 mt-2' id='q".$questionCount."Opt1'>
+                <div class='input-group-prepend'>
+                <span class='input-group-text' id='q".$questionCount."Opt1Lbl'>A</span>
+                <div class='input-group-text'><input type='radio' name='q".$questionCount."OptCorrect' id='q".$questionCount."Opt1RadButton'></div>
+                </div>
+                <input type='text' class='form-control' id='q".$questionCount."Opt1Value' name='q".$questionCount."Opt1Value' placeholder='Insert the Option'/>
+                <div class='input-group-append'><button type='button' class='btn btn-sm btn-danger' id='q".$questionCount."Opt1DeleteButton'
+                onclick=\'$.confirm({title: \"Are You Sure?\", content: \"Deletion can not been undone\", buttons: {Yes: function() {deleteNewOption(".$questionCount.",1);}, No: function(){}}});'>
+                <i class='fas fa-trash-alt'></i></button></div>
+                </div>
+              </div>
+              <div class='col-md-5'></div>
+              <button class='btn btn-success col-md-2' id='q".$questionCount."AddOptionButton' onClick='return addOption(".$questionCount.",1);'>Add an Option!</button>
+              <div class='col-md-5'></div>
+              </div>
+            ";
+            if($quizRules == ''){
+              $quizRules .= "q".$questionCount."Title: 'required'";
+              $quizMessages .= "q".$questionCount."Title: 'Please enter a title for the question!'";
+            }else{
+              $quizRules .= ", q".$questionCount."Title: 'required'";
+              $quizMessages .= ", q".$questionCount."Title: 'Please enter a title for the question!'";
+            }
+            $quizRules .= ", q".$questionCount."Opt1Value: 'required'";
+            $quizMessages .= ", q".$questionCount."Opt1Value: 'Please enter a title for the Option!'";
+            $quizRules .= ", q".$questionCount."OptCorrect: 'required'";
+            $quizMessages .= ", q".$questionCount."OptCorrect: 'Please Select a Correct Answer for the Question'";
+          }
           echo "</div>"; // Close allQuestions div
 
           echo "<div class='form-group text-center'>";
@@ -208,7 +247,7 @@
     echo "    if(element.attr('id') == 'tokenField'){";
     echo "        error.insertAfter(element.parent());";
     echo "    }else if(element.is('input:radio')){";
-    echo "        error.insertAfter(element.parent().parent().parent().parent().parent());";
+    echo "        error.insertAfter(element.parent().parent().parent());";
     echo "    }else{";
     echo "        error.insertAfter(element.parent());";
     echo "    }";

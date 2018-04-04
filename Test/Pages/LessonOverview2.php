@@ -113,7 +113,7 @@
                 $.ajax({
                   url:"../PHP/loadNewTopic.php",
                   type:'POST',
-                  data: 'id='+$result+'&root='+$root,
+                  data: 'id='+$result+'&root='+$root+'&parentID='+$parentID+'&topicCount='+$('.topics'+$parentID).length,
                   success: function($topicDisplay){
                     $('#'+$parentTitle+'TopicList').append($topicDisplay);
                     loadTopic($result, 1);
@@ -388,6 +388,7 @@
             </div>\
           ");
           $("#q"+$questionCount+"Opt"+$optionCount+"Value").rules("add", {required: true, messages: {required: "Please enter an option, or delete the option!"}});
+          $("#q"+$questionCount+"OptCorrect").rules("add", {required: true, messages: {required: "Please Select a correct answer for the option!"}});
           $("#q"+$questionCount+"AddOptionButton").attr("onclick", "return addOption("+$questionCount+", "+($optionCount + 1)+");");
           return false;
         }
