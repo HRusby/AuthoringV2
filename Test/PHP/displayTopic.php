@@ -53,12 +53,17 @@
   echo "<a class='nav-link' id='quizTab' data-toggle='tab' href='#quiz' role='tab' aria-controls='quiz' aria-selected='false'>Edit Quiz</a>";
   echo "</li>";
   echo "</ul>";// Close tab list
-
+  $topicTitle = str_replace(" ", "",$topic['title']);
   echo "<div class='tab-content' id='tabContent'>";
     echo "<div class='tab-pane fade show active' id='edit' role='tabpanel' aria-labelledby='editTab'>";
       echo "<div class='row h-100 justify-content-center align-items-center my-3'>";
         echo "<form class='w-75 bg-white border border-light p-3' method='POST' action='../PHP/updateTopic2.php?t=".$topicID."' id='topicUpdateForm'>";
-          echo "<div class='form-group'><label for='topicTitle'>Topic Title:</label><input type='text' class ='form-control bg-light' value='".$topic['title']."' id='topicTitle' name='topicTitle'/></div>";
+          echo "<div class='form-group'><label for='topicTitle' class='w-100'>Topic Title:";
+          echo "<button type='button' class='btn btn-sm btn-danger float-right' id='topicDeleteButton' ";
+          // onclick='$.confirm({title: \"Are you sure?\",content: \"test\",buttons: {confirm: function() { location.href=\"../PHP/deletePost.php?m=".$root."&t=".$topicData['id']."\";},cancel: function() { $.alert(\"Cancelled\");}}});'
+          echo "onclick='$.confirm({title: \"Are You Sure?\", content: \"Deletion can not been undone\", buttons: {confirm: function() {deleteTopic(".$topicID.", \"".$topicTitle."\", ".$topicRelations['root']."); $(\"#actionPanel\").html(\"\");}, cancel: function(){ $.alert(\"Cancelled\");}}});'";
+          echo "data-toggle='tooltip' data-placement='top' title='Delete This Topic'><i class='fas fa-trash-alt'></i></button>";
+          echo "</label><input type='text' class ='form-control bg-light' value='".$topic['title']."' id='topicTitle' name='topicTitle'/></div>";
           echo "<div class='form-group'><label for='topicContent'>Topic Content:</label><textarea class='form-control bg-light' id='topicContent' name='topicContent' style='resize:vertical;'>".$topic['description']."</textarea></div>";
           echo "<div class='form-group'><label for='tokenField'>Tags:</label><input type='text' class='form-control bg-light' id='tokenField' name='tokenField' value='".$topic['tags']."' /></div>";
           echo "<script>$('#tokenField').tokenfield({autocomplete: {source: [".$tags."], delay: 100}, showAutocompleteOnFocus: true})</script>";
@@ -112,7 +117,7 @@
               echo "<div class='input-group col-md-12'>";
                 // Add a prepended label for the question
                 echo "<div class='input-group-prepend'><span class='input-group-text' id='q".$questionCount."Lbl'>".$questionCount.".</span></div>";
-                echo "<input type='text' class='form-control' id='q".$questionCount."Title' name='q".$questionCount."Title' value='".$question['description']."' />";
+                echo "<input type='text' class='form-control bg-dark' style='color:white;' id='q".$questionCount."Title' name='q".$questionCount."Title' value='".$question['description']."' />";
                 if($quizRules == ''){
                   $quizRules .= "q".$questionCount."Title: 'required'";
                   $quizMessages .= "q".$questionCount."Title: 'Please enter a title for the question!'";
@@ -212,6 +217,17 @@
 
   echo "var myElement = $('#topicContent');";
   echo "myElement.summernote({";
+    echo "toolbar: [";
+    echo "  ['style', ['bold', 'italic', 'underline']],";
+    echo "  ['font', ['strikethrough', 'superscript', 'subscript']],";
+    echo "  ['fontsize', ['fontsize']],";
+    echo "  ['color', ['color']],";
+    echo "  ['para', ['ul', 'ol', 'paragraph']],";
+    // echo "  ['height', ['height']],";
+    echo "  ['insert', ['picture', 'link', 'video', 'table']],";
+    echo "  ['misc', ['undo', 'redo', 'codeview', 'help']]";
+    echo "],";
+    echo "popover:[],";
     echo "callbacks: {";
       echo "onChange: function(contents, $editable) {";
         echo "myElement.val(myElement.summernote('isEmpty') ? \"\" : contents);";

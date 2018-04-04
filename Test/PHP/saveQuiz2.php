@@ -88,6 +88,55 @@ while($t == true){
         // If not the loop is stopped
         $t = false;
     }
+
+    // Determine if there's at least one question for the topic, if not, set to draft
+    // Theoretically would've stopped modules being seen in topolor, unfortunately doesn't seem to work
+
+    // Get Module ID
+    // $moduleIDQuery = "SELECT root FROM tpl_tutorial_topic WHERE topic_id=?;";
+    // $moduleIDStmt = $db->stmt_init();
+    // $moduleIDStmt->prepare($moduleIDQuery);
+    // $moduleIDStmt->bind_param("i", $topicID);
+    // $moduleIDStmt->execute();
+    // $moduleID = $moduleIDStmt->get_result()->fetch_assoc();
+    //
+    // // Get all topic ID of that module
+    // $topicIDsQuery = "SELECT topic_id FROM tpl_tutorial_topic WHERE root=?;";
+    // $topicIDsStmt = $db->stmt_init();
+    // $topicIDsStmt->prepare($topicIDsQuery);
+    // $topicIDsStmt->bind_param("i", $moduleID);
+    // $topicIDsStmt->execute();
+    // $topicIDs = $topicIDsStmt->get_result();
+    //
+    // // Loop through Topic IDs, if it has at least 1 question break and set module to non-draft else set to draft
+    // $atLeastOne = false;
+    // while($id = $topicIDs->fetch_assoc()){
+    //   $questionsQuery = "SELECT * FROM tpl_question WHERE topic_id=?;";
+    //   $questionsStmt = $db->stmt_init();
+    //   $questionsStmt->prepare($questionsQuery);
+    //   $questionsStmt->bind_param("i", $id['topic_id']);
+    //   $questionsStmt->execute();
+    //   $questionsResult=$questionsStmt->get_result();
+    //
+    //   if($questionsResult->num_rows() > 0){
+    //     $atLeastOne = true;
+    //     break;
+    //   }
+    // }
+    // if($atLeastOne){
+    //   $updateDraftQuery = "UPDATE tpl_post SET status=3 WHERE id=?;";
+    //   $updateDraftStmt = $db->stmt_init();
+    //   $updateDraftStmt->prepare($updateDraftQuery);
+    //   $updateDraftStmt->bind_param("i", $moduleID);
+    //   $updateDraftStmt->execute();
+    //   // Set module to category 0 (module)
+    // }else{
+    //   $updateDraftQuery = "UPDATE tpl_post SET status=1 WHERE id=?;";
+    //   $updateDraftStmt = $db->stmt_init();
+    //   $updateDraftStmt->prepare($updateDraftQuery);
+    //   $updateDraftStmt->bind_param("i", $moduleID);
+    //   $updateDraftStmt->execute();
+    // }// Set module to being draft (category )
 }
 
 ?>

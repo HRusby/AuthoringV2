@@ -5,7 +5,7 @@
   $userid = $_SESSION['user_id'];
   $moduleID = $_POST['root'];
   $title = htmlspecialchars($_POST['topicTitle']);
-  $description = htmlspecialchars($_POST['topicDesc']);
+  $description = htmlspecialchars($_POST['topicContent']);
   $tags = htmlspecialchars($_POST['tags']);
   $prereqs = $_POST['prereqs'];
   $optional = $_POST['optional']; // either on or null

@@ -50,8 +50,9 @@
             type:$(this).attr('method'),
             data: $dataString,
             success:function($result){
-                alert($result);
-                alert("Updated!");
+                // alert($result);
+                $.alert("Module Updated!");
+                $('#actionPanel').html('');
             },
             error: function(xhr, textstatus, errorthrown){
               alert('Error\nState: '+xhr.readyState+'\nStatus: '+textstatus+'\nError: '+errorthrown);
@@ -78,7 +79,7 @@
             data: $dataString,
             success:function($result){
                 // alert($result);
-                alert("Updated!");
+                $.alert("Updated Topic!");
             },
             error: function(xhr, textstatus, errorthrown){
               alert('Error\nState: '+xhr.readyState+'\nStatus: '+textstatus+'\nError: '+errorthrown);
@@ -89,7 +90,7 @@
 
       $(document).on('submit', '#topicCreateForm', function(){
         $topicTitle = $(this).find('#topicTitle').val();
-        $topicContent = $(this).find('#topicContent').val();
+        $newTopicContent = $(this).find('#topicContent').val();
         $tags = $(this).find('#tokenField').val();
         $parentID = $(this).find('#parentID').val();
         $parentTitle = $(this).find('#parentTitle').val();
@@ -100,7 +101,7 @@
           $optional = 0;
         }
         $prerequisite = $(this).find('#prereqs').val();
-        $dataString = "topicTitle="+$topicTitle+"&topicContent="+$topicContent+"&tags="+$tags+"&prereqs="+$prerequisite+"&optional="+$optional+"&parentID="+$parentID+"&root="+$root;
+        $dataString = "topicTitle="+$topicTitle+"&topicContent="+$newTopicContent+"&tags="+$tags+"&prereqs="+$prerequisite+"&optional="+$optional+"&parentID="+$parentID+"&root="+$root;
         // alert($dataString);
         $.ajax({
             url:$(this).attr('action'),
@@ -115,6 +116,7 @@
                   data: 'id='+$result+'&root='+$root,
                   success: function($topicDisplay){
                     $('#'+$parentTitle+'TopicList').append($topicDisplay);
+                    loadTopic($result, 1);
                   },
                   error: function(xhr, textstatus, errorthrown){
                     alert('Error\nState: '+xhr.readyState+'\nStatus: '+textstatus+'\nError: '+errorthrown);
@@ -140,9 +142,9 @@
             type:$(this).attr('method'),
             data: $dataString,
             success:function($result){
-                alert("Module Created!");
+                $.alert("Module Created!");
                 // Empty the actionPanel
-                alert($result);
+                // alert($result);
                 $.ajax({
                   url:"../PHP/loadNewModule.php",
                   type:'POST',
@@ -181,6 +183,86 @@
 
         return false;
       });
+
+      function moveTopicUp($currentIndex, $intendedIndex, $parentID){
+        if($intendedIndex == -1){
+          $.alert("Topic cannot be moved any further up!");
+          return;
+        }else if($intendedIndex == ($('.topics'+$parentID).length)){
+          $.alert("Topic cannot be moved any further down!");
+          return;
+        }
+        // $.alert('In Move Topic\nTopics Length: '+$('.topics'+$parentID).length);
+        $movingTopic = $($('.topics'+$parentID).get($currentIndex)); // The topic the user wants to move
+        $movingID = $movingTopic.find('.listTopicID'+$parentID).val();
+        // $.alert('Moving ID: '+$movingID);
+        $positionTopic = $($('.topics'+$parentID).get($intendedIndex)); // The topic in the position the user wants to move to
+        $positionID = $positionTopic.find('.listTopicID'+$parentID).val();
+        // $.alert('position ID: '+$positionID);
+
+        $movingTopic.insertBefore($positionTopic);
+        // Change button onClick
+        $movingTopic.find('.moveUpBtn').attr('onclick', 'moveTopicUp('+($currentIndex-1)+','+($intendedIndex-1)+','+$parentID+');');
+        $positionTopic.find('.moveUpBtn').attr('onclick', 'moveTopicUp('+($currentIndex)+','+($intendedIndex)+','+$parentID+');');
+
+        $movingTopic.find('.moveDownBtn').attr('onclick', 'moveTopicDown('+($currentIndex-1)+','+($currentIndex)+','+$parentID+');');
+        $positionTopic.find('.moveDownBtn').attr('onclick', 'moveTopicDown('+($currentIndex)+','+($currentIndex+1)+','+$parentID+');');
+        // AJAX request to update lft and rgt values
+
+        $.ajax({
+            url:'../PHP/movePositionsUp.php',
+            type:'POST',
+            data: 'moveID='+$movingID+'&positionID='+$positionID,
+            success:function($result){
+              // $.alert($result);
+                $.alert("Positions Saved!");
+            },
+            error: function(xhr, textstatus, errorthrown){
+              alert('Error\nState: '+xhr.readyState+'\nStatus: '+textstatus+'\nError: '+errorthrown);
+            }
+        });
+
+      }
+
+      function moveTopicDown($currentIndex, $intendedIndex, $parentID){
+        if($intendedIndex == -1){
+          $.alert("Topic cannot be moved any further up!");
+          return;
+        }else if($intendedIndex == ($('.topics'+$parentID).length)){
+          $.alert("Topic cannot be moved any further down!");
+          return;
+        }
+        // $.alert('In Move Topic\nTopics Length: '+$('.topics'+$parentID).length);
+        $movingTopic = $($('.topics'+$parentID).get($currentIndex)); // The topic the user wants to move
+        $movingID = $movingTopic.find('.listTopicID'+$parentID).val();
+        // $.alert('Moving ID: '+$movingID);
+        $positionTopic = $($('.topics'+$parentID).get($intendedIndex)); // The topic in the position the user wants to move to
+        $positionID = $positionTopic.find('.listTopicID'+$parentID).val();
+        // $.alert('position ID: '+$positionID);
+
+        $movingTopic.insertAfter($positionTopic);
+        // Change button onClick
+        $movingTopic.find('.moveDownBtn').attr('onclick', 'moveTopicDown('+($currentIndex+1)+','+($intendedIndex+1)+','+$parentID+');');
+        $positionTopic.find('.moveDownBtn').attr('onclick', 'moveTopicDown('+($currentIndex)+','+($intendedIndex)+','+$parentID+');');
+
+        $movingTopic.find('.moveUpBtn').attr('onclick', 'moveTopicUp('+($currentIndex+1)+','+($currentIndex)+','+$parentID+');');
+        $positionTopic.find('.moveUpBtn').attr('onclick', 'moveTopicUp('+($currentIndex)+','+($currentIndex-1)+','+$parentID+');');
+
+        // AJAX request to update lft and rgt values
+        $.ajax({
+            url:'../PHP/movePositionsDown.php',
+            type:'POST',
+            data: 'moveID='+$movingID+'&positionID='+$positionID,
+            success:function($result){
+              // $.alert($result);
+                $.alert("Positions Saved!");
+            },
+            error: function(xhr, textstatus, errorthrown){
+              alert('Error\nState: '+xhr.readyState+'\nStatus: '+textstatus+'\nError: '+errorthrown);
+            }
+        });
+
+      }
 
       function loadTopic($id, $category){
         if($category == 0){
@@ -274,10 +356,10 @@
             type: 'POST',
             data: $dataString,
             success:function($result){
-                $("#"+$moduleTitle+"Row").html('');
-                $("#"+$moduleTitle+"Row").remove();
-                $("#"+$moduleTitle+"TopicList").html('');
-                $("#"+$moduleTitle+"TopicList").remove();
+                $('#listView').find("#"+$moduleTitle+"Row").html('');
+                $('#listView').find("#"+$moduleTitle+"Row").remove();
+                $('#listView').find("#"+$moduleTitle+"TopicList").html('');
+                $('#listView').find("#"+$moduleTitle+"TopicList").remove();
                 $.alert("Module Deleted!");
             },
             error: function(xhr, textstatus, errorthrown){
@@ -300,9 +382,12 @@
             <div class='input-group-text'><input type='radio' name='q"+$questionCount+"OptCorrect' id='q"+$questionCount+"Opt"+$optionCount+"RadButton'></div>\
             </div>\
             <input type='text' class='form-control' id='q"+$questionCount+"Opt"+$optionCount+"Value' name='q"+$questionCount+"Opt"+$optionCount+"Value' placeholder='Insert the Option'/>\
-            <div class='input-group-append'><button class='btn btn-danger' id='q"+$questionCount+"Opt"+$optionCount+"DeleteButton' onclick='return deleteNewOption("+$questionCount+","+$optionCount+");'><i class='fas fa-trash-alt'></i></button></div>\
+            <div class='input-group-append'><button type='button' class='btn btn-sm btn-danger' id='q"+$questionCount+"Opt"+$optionCount+"DeleteButton' \
+            onclick=\'$.confirm({title: \"Are You Sure?\", content: \"Deletion can not been undone\", buttons: {Yes: function() {deleteNewOption("+$questionCount+","+$optionCount+");}, No: function(){}}});'>\
+            <i class='fas fa-trash-alt'></i></button></div>\
             </div>\
           ");
+          $("#q"+$questionCount+"Opt"+$optionCount+"Value").rules("add", {required: true, messages: {required: "Please enter an option, or delete the option!"}});
           $("#q"+$questionCount+"AddOptionButton").attr("onclick", "return addOption("+$questionCount+", "+($optionCount + 1)+");");
           return false;
         }
@@ -315,7 +400,9 @@
           <div class='input-group col-md-12'>\
             <div class='input-group-prepend'><span class='input-group-text' id='q"+$questionCount+"Lbl'>"+$questionCount+".</span></div>\
             <input type='text' class='form-control' id='q"+$questionCount+"Title' name='q"+$questionCount+"Title' placeholder='Enter the Question!'/>\
-            <div class='input-group-append'><button class='btn btn-danger' id='q"+$questionCount+"DeleteButton' onclick='return deleteNewQuestion("+$questionCount+");'><i class='fas fa-trash-alt'></i></button></div>\
+            <div class='input-group-append'><button type='button' class='btn btn-danger' id='q"+$questionCount+"DeleteButton' \
+            onclick=\'$.confirm({title: \"Are You Sure?\", content: \"Deletion can not been undone\", buttons: {confirm: function() {deleteNewQuestion("+$questionCount+");}, cancel: function(){ $.alert(\"Cancelled\");}}});'>\
+            <i class='fas fa-trash-alt'></i></button></div>\
           </div>\
           <div class='form-group row w-100' id='q"+$questionCount+"Options'>\
           </div>\
@@ -324,6 +411,7 @@
           <div class='col-md-5'></div>\
           </div>\
         ");
+        $("#q"+$questionCount+"Title").rules("add", {required: true, messages: {required: "Please enter a question, or delete it!"}});
         $("#addQuestionButton").attr("onclick", "return addQuestion("+($questionCount+1)+");");
         return false;
       }
@@ -336,7 +424,7 @@
         $.ajax({
             url:"../PHP/deleteExistingOption.php?o="+$optionID,
             success:function($result){
-                alert("Option has been successfully deleted!");
+                $.alert("Option has been successfully deleted!");
                 // alert($result);
                 $("#q"+$questionCount+"Opt"+$optionCount).html('');
                 $("#q"+$questionCount+"Opt"+$optionCount).remove();
@@ -353,10 +441,10 @@
       }
 
       function deleteNewOption($questionCount, $optionCount){
-        // Run delete script via AJAX
         $("#q"+$questionCount+"Opt"+$optionCount).html('');
         $("#q"+$questionCount+"Opt"+$optionCount).remove();
         updateOptionIndexes($questionCount, $optionCount);
+        $.alert('Option has been successfully Deleted');
         return false;
       }
 
@@ -368,7 +456,7 @@
         $.ajax({
             url:"../PHP/deleteExistingQuestion.php?q="+$questionID,
             success:function($result){
-                alert("Question has been successfully deleted!");
+                $.alert("Question has been successfully deleted!");
                 // alert($result);
                 $("#q"+$questionCount).html('');
                 $("#q"+$questionCount).remove();
@@ -387,6 +475,7 @@
         $("#q"+$questionCount).html('');
         $("#q"+$questionCount).remove();
         updateQuestionIndexes($questionCount);
+        $.alert("Question has been successfully deleted!");
         return false;
       }
 
@@ -508,7 +597,7 @@
     </nav>
     <div class='container-fluid' id='authoringContainer'>
       <div class='row' id='bodyContainer'>
-        <div class='col-md-3 h-100 px-1 border-right border-dark bg-dark position-fixed' id ='listView'>
+        <div class='col-md-3 h-100 w-75 px-3 border-right border-dark bg-light position-fixed' id ='listView'>
           <script>
             $loadURL = "../PHP/loadListView.php?u="+<?php echo $userid; ?>;
             $.ajax({

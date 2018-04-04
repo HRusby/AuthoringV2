@@ -76,7 +76,7 @@
   // Validation rules and messages for the edit tab
 
   echo "<script>";
-  echo "$('#topicCreateForm').validate({";
+  echo "var updateValidator = $('#topicCreateForm').validate({";
     echo "rules:{".$editRules."},";
     echo "messages:{".$editMessages."},";
     echo "errorPlacement: function(error, element){";
@@ -85,9 +85,30 @@
     echo "    }else{";
     echo "        error.insertAfter(element.parent());";
     echo "    }";
-    echo "}";
+    echo "},";
+    echo "ignore: \":hidden:not(#topicContent),.note-editable.panel-body\"";
   echo "});";
 
+  echo "var myElement = $('#topicContent');";
+  echo "myElement.summernote({";
+    echo "toolbar: [";
+    echo "  ['style', ['bold', 'italic', 'underline']],";
+    echo "  ['font', ['strikethrough', 'superscript', 'subscript']],";
+    echo "  ['fontsize', ['fontsize']],";
+    echo "  ['color', ['color']],";
+    echo "  ['para', ['ul', 'ol', 'paragraph']],";
+    // echo "  ['height', ['height']],";
+    echo "  ['insert', ['picture', 'link', 'video', 'table']],";
+    echo "  ['misc', ['undo', 'redo', 'codeview', 'help']]";
+    echo "],";
+    echo "popover:[],";
+    echo "callbacks: {";
+      echo "onChange: function(contents, $editable) {";
+        echo "myElement.val(myElement.summernote('isEmpty') ? \"\" : contents);";
+        echo "updateValidator.element(myElement);";
+      echo "}";
+    echo "}";
+  echo "});";
   echo "</script>";
 
 ?>
