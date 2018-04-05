@@ -52,7 +52,7 @@
           $titleExcerpt = substr($topic['title'],0,27)."...";
         }
 
-        echo "<div class='row ml-3 my-2 w-100 topics".$parentID."' style='height:50px;' id='".$topicTitle."Row'>";
+        echo "<div class='row ml-2 my-2 w-100 topics".$parentID."' style='height:50px;' id='".$topicTitle."Row'>";
           echo "<div class='input-group pr-1'>";
             echo "<div class='input-group-prepend'>";
               echo "<button data-toggle='collapse' data-target='#".$topicTitle."TopicList' aria-expanded='false'  class = 'btn btn-sm collapseButton pull-left'><i class='fas fa-angle-right'></i></button>";
@@ -62,8 +62,8 @@
                 <button type='button' class='btn btn-sm btn-secondary moveUpBtn' data-toggle='tooltip' data-placement='top' title='Move Topic Up' onclick='moveTopicUp(".$topicCount.",".($topicCount-1).", ".$parentID.");'><i class='fas fa-angle-up'></i></button>
                 <button type='button' class='btn btn-sm btn-secondary moveDownBtn' data-toggle='tooltip' data-placement='bottom' title='Move Topic Down' onclick='moveTopicDown(".$topicCount.",".($topicCount+1).", ".$parentID.");'><i class='fas fa-angle-down'></i></button>
               </div>";
-            echo "<div class='w-50 bg-dark clickable pl-1' style='color:white;' onclick='loadTopic(".$topic['id'].", ".$topic['category'].")'>".strip_tags($titleExcerpt)."</div>";
-            echo "<div class='input-group-append'>";
+            echo "<div class='w-50 bg-light clickable pl-1 title' onclick='loadTopic(".$topic['id'].", ".$topic['category'].")'>".strip_tags($titleExcerpt)."</div>";
+            echo "<div class='input-group-append btn-group' role='group'>";
               echo "<button class='btn btn-sm btn-success' id='".$topicTitle."AddTopicButton' onclick='return addTopic(".$topic['id'].",\"".$topicTitle."\", ".$root.");' data-toggle='tooltip' data-placement='top' title='Add A Sub-Topic'><i class='fas fa-plus'></i></button>";
               echo "<button class='btn btn-sm btn-danger' id='".$topicTitle."DeleteButton' ";
               // onclick='$.confirm({title: \"Are you sure?\",content: \"test\",buttons: {confirm: function() { location.href=\"../PHP/deletePost.php?m=".$root."&t=".$topicData['id']."\";},cancel: function() { $.alert(\"Cancelled\");}}});'
@@ -91,8 +91,11 @@
   $ModulesStmt->execute();
   $ModulesResult=$ModulesStmt->get_result();
   $moduleCount = 0;
-  echo "\n<div class='p-1 mb-4'>"; // Div to ensure padding around all modules/topics.
-    echo "<div id='allModules' class='ml-1 w-100'>";
+  echo "\n<div class='mb-5 card h-100'>"; // Div to ensure padding around all modules/topics.
+    echo "<div class='card-header text-center'>";
+      echo "<button class='btn btn-success' id='addModuleButton' onclick='return addModule();' data-toggle='tooltip' data-placement='top' title='Create a New Module'><i class='fas fa-plus'></i> Create A New Module</button>";
+    echo "</div>"; // Close card-header
+    echo "<div id='allModules' class='ml-1 w-100 card-body'>";
       while($module = $ModulesResult->fetch_assoc()){
         // Create a row for this module, expand to load in all subtopics
         if(strlen($topic['title'])<30){
@@ -107,8 +110,8 @@
             echo "<div class='input-group-prepend'>";
               echo "<button data-toggle='collapse' data-target='#".$moduleTitle."TopicList' aria-expanded='false'  class = 'btn btn-sm collapseButton pull-left'><i class='fas fa-angle-right'></i></button>";
             echo "</div>"; // Close input group prepend
-            echo "<div class='w-50 bg-dark clickable pl-1' style='color:white;' onclick='loadTopic(".$module['id'].", ".$module['category'].")'>".strip_tags($titleExcerpt)."</div>";
-            echo "<div class='input-group-append'>";
+            echo "<div class='w-50 bg-light clickable pl-1 title' onclick='loadTopic(".$module['id'].", ".$module['category'].")'>".strip_tags($titleExcerpt)."</div>";
+            echo "<div class='input-group-append btn-group' role='group'>";
               echo "<button class='btn btn-sm btn-success' id='".$moduleTitle."AddTopicButton' onclick='return addTopic(".$module['id'].",\"".$moduleTitle."\", ".$module['id'].");' data-toggle='tooltip' data-placement='top' title='Add a Topic to this Module'><i class='fas fa-plus'></i></button>";
               echo "<button class='btn btn-sm btn-danger' id='".$moduleTitle."DeleteButton' ";
               //onclick='return deleteModule(".$module['id'].",\"".$moduleTitle."\", ".$moduleCount.");'
@@ -124,7 +127,9 @@
         $moduleCount++;
       }
     echo "</div>"; // Close All Modules div
-    echo "<button class='btn btn-success id='addModuleButton' onclick='return addModule();' data-toggle='tooltip' data-placement='top' title='Create a New Module'>Create A Module!</button>";
+    // echo "<div class='card-footer'>";
+    //   echo "<button class='btn btn-success id='addModuleButton' onclick='return addModule();' data-toggle='tooltip' data-placement='top' title='Create a New Module'><i class='fas fa-plus'></i></button>";
+    // echo "</div>"; // close card-footer
   echo "</div>"; // Close padding Div
   echo "<script>$('[data-toggle=\"tooltip\"]').tooltip();</script>";
   $db->close();

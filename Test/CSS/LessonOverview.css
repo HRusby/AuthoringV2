@@ -4,9 +4,17 @@ body {
     margin-top:50px;
 }
 
-#listView{
-  overflow-x:scroll;
+#allModules{
   overflow-y: scroll;
+}
+
+#listView{
+  margin-bottom:60px;
+}
+
+.title{
+  color: #18B193;
+  font-style: bold;
 }
 
 .clickable{

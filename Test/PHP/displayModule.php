@@ -33,20 +33,24 @@
 
   // echo "<div class='row'>";
   $moduleTitle = str_replace(" ", "",$module['title']);
-  echo "<div class='row h-100 justify-content-center align-items-center my-3'>";
-  echo "<form class='w-75 bg-white border border-light p-3' method='POST' action='../PHP/updateModule2.php?m=".$moduleID."' id='moduleUpdateForm'>";
-  echo "<div class='form-group'><label for='moduleTitle' class='w-100'>Module Title:";
-  echo "<button type='button' class='btn btn-danger float-right'";
-  echo "onclick='$.confirm({title: \"Are You Sure?\", content: \"Deletion can not been undone\", buttons: {confirm: function() {deleteModule(".$module['id'].",\"".$moduleTitle."\"); $(\"#actionPanel\").html(\"\");}, cancel: function(){ $.alert(\"Cancelled\");}}});'";
-  echo "</button><i class='fas fa-trash-alt'></i></div>";
-  echo "</label><input type='text' class ='form-control' value='".$module['title']."' id='moduleTitle' name='moduleTitle'/>";
+  echo "<div class='row justify-content-center align-items-center my-1'>";
+    echo "<div class='card w-75'>";
+      echo "<div class='card-body'>";
+        echo "<form class='p-3' method='POST' action='../PHP/updateModule2.php?m=".$moduleID."' id='moduleUpdateForm'>";
+        echo "<div class='form-group'><label for='moduleTitle' class='w-100'>Module Title:";
+          echo "<button type='button' class='btn btn-sm btn-danger float-right'";
+          echo "onclick='$.confirm({title: \"Are You Sure?\", content: \"Deletion can not been undone\", buttons: {confirm: function() {deleteModule(".$module['id'].",\"".$moduleTitle."\"); $(\"#actionPanel\").html(\"\");}, cancel: function(){ $.alert(\"Cancelled\");}}});'";
+          echo "</button><i class='fas fa-trash-alt'></i></div>";
+        echo "</label><input type='text' class ='form-control' value='".$module['title']."' id='moduleTitle' name='moduleTitle'/>";
 
-  echo "<div class='form-group'><label for='moduleContent'>Module Content:</label><textarea class='form-control' id='moduleContent' name='moduleContent' style='resize:vertical;'>".$module['description']."</textarea></div>";
-  echo "<div class='form-group'><label for='tokenField'>Tags:</label><input type='text' class='form-control' id='tokenField' name='tokenField' value='".$module['tags']."' /></div>";
-  echo "<script>$('#tokenField').tokenfield({autocomplete: {source: [".$tags."], delay: 100}, showAutocompleteOnFocus: true})</script>";
-  echo "<div class='btn-group'><button class='btn btn-primary' type='submit'>Update Module</button></div>";
-  echo "</form>";
-  echo "</div>"; // Close row container
+        echo "<div class='form-group'><label for='moduleContent'>Module Content:</label><textarea class='form-control' id='moduleContent' name='moduleContent' style='resize:vertical;'>".$module['description']."</textarea></div>";
+        echo "<div class='form-group'><label for='tokenField'>Tags:</label><input type='text' class='form-control' id='tokenField' name='tokenField' value='".$module['tags']."' /></div>";
+        echo "<script>$('#tokenField').tokenfield({autocomplete: {source: [".$tags."], delay: 100}, showAutocompleteOnFocus: true})</script>";
+        echo "<div class='btn-group'><button class='btn btn-primary' type='submit'>Update Module</button></div>";
+        echo "</form>";
+      echo "</body>";
+    echo "</div>"; // Close card container
+  echo "</div>"; // Close alignment row
 
   $rules .= "moduleTitle: 'required'";
   $messages .= "moduleTitle: 'Please input a Title for this Module'";
@@ -80,7 +84,7 @@
     echo "  ['color', ['color']],";
     echo "  ['para', ['ul', 'ol', 'paragraph']],";
     // echo "  ['height', ['height']],";
-    echo "  ['insert', ['picture', 'link', 'video', 'table']],";
+    echo "  ['insert', ['link', 'video', 'table']],";
     echo "  ['misc', ['undo', 'redo', 'codeview', 'help']]";
     echo "],";
     echo "popover:[],";

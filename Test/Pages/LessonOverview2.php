@@ -143,6 +143,7 @@
             data: $dataString,
             success:function($result){
                 $.alert("Module Created!");
+                loadTopic($result, 0);
                 // Empty the actionPanel
                 // alert($result);
                 $.ajax({
@@ -332,6 +333,7 @@
 
       function deleteTopic($topicID, $topicTitle, $moduleID){
         $dataString='id='+$topicID;
+        $('#actionPanel').html('');
         $.ajax({
             url:"../PHP/deletePost.php",
             type: 'POST',
@@ -351,6 +353,7 @@
 
       function deleteModule($moduleID, $moduleTitle){
         $dataString='id='+$moduleID;
+        $('#actionPanel').html('');
         $.ajax({
             url:"../PHP/deletePost.php",
             type: 'POST',
@@ -593,12 +596,12 @@
     <title>LessonOverview2</title>
   </head>
   <body>
-    <nav class="navbar navbar-dark bg-dark fixed-top border-bottom border-light">
-      <span class="navbar-brand mb-0 h1">Topolor</span>
+    <nav class="navbar bg-light fixed-top border-bottom border-light" style='box-shadow:1px 1px 1px grey;'>
+      <span class="navbar-brand mb-0 h1"><a href="../../php/"><img src='../../php/images/logo.png' alt='Topolor'></a></span>
     </nav>
     <div class='container-fluid' id='authoringContainer'>
-      <div class='row' id='bodyContainer'>
-        <div class='col-md-3 h-100 w-75 px-3 border-right border-dark bg-light position-fixed' id ='listView'>
+      <div class='row w-100 mb-3' id='bodyContainer'>
+        <div class='col-md-3 pb-5 h-100 w-100 border-right border-dark bg-light position-fixed' id ='listView'>
           <script>
             $loadURL = "../PHP/loadListView.php?u="+<?php echo $userid; ?>;
             $.ajax({
@@ -614,7 +617,7 @@
 
         </div>
 
-        <div class='col-md-9 offset-md-3' id='actionPanel'>
+        <div class='col-md-9 offset-md-3 w-100' id='actionPanel'>
 
         </div>
       </div>

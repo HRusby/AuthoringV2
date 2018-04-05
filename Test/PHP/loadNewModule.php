@@ -13,13 +13,13 @@
   $module = $ModulesResult->fetch_assoc();
   $moduleTitle = str_replace(" ", "",$module['title']);
 
-  echo "<div class='row ml-3 my-2' id='".$moduleTitle."Row'>";
+  echo "<div class='row my-2 w-100' style='height:50px;' id='".$moduleTitle."Row'>";
     echo "<div class='input-group pr-1'>";
       echo "<div class='input-group-prepend'>";
         echo "<button data-toggle='collapse' data-target='#".$moduleTitle."TopicList' aria-expanded='false'  class = 'btn btn-sm collapseButton pull-left'><i class='fas fa-angle-right'></i></button>";
       echo "</div>"; // Close input group prepend
-      echo "<div class='w-50 bg-dark clickable pl-1' style='color:white;' onclick='loadTopic(".$module['id'].", ".$module['category'].")'>".strip_tags($module['title'])."</div>";
-      echo "<div class='input-group-append'>";
+      echo "<div class='w-50 bg-light clickable pl-1 title' onclick='loadTopic(".$module['id'].", ".$module['category'].")'>".strip_tags($module['title'])."</div>";
+      echo "<div class='input-group-append btn-group'>";
         echo "<button class='btn btn-sm btn-success' id='".$moduleTitle."AddTopicButton' onclick='return addTopic(".$module['id'].",\"".$moduleTitle."\", ".$module['id'].");' data-toggle='tooltip' data-placement='top' title='Add a Topic to this Module'><i class='fas fa-plus'></i></button>";
         echo "<button class='btn btn-sm btn-danger' id='".$moduleTitle."DeleteButton' ";
         //onclick='return deleteModule(".$module['id'].",\"".$moduleTitle."\", ".$moduleCount.");'

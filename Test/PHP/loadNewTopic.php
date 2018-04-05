@@ -40,7 +40,7 @@
           <button type='button' class='btn btn-sm btn-secondary moveUpBtn' data-toggle='tooltip' data-placement='top' title='Move Topic Up' onclick='moveTopicUp(".$topicCount.",".($topicCount-1).", ".$parentID.");'><i class='fas fa-angle-up'></i></button>
           <button type='button' class='btn btn-sm btn-secondary moveDownBtn' data-toggle='tooltip' data-placement='bottom' title='Move Topic Down' onclick='moveTopicDown(".$topicCount.",".($topicCount+1).", ".$parentID.");'><i class='fas fa-angle-down'></i></button>
         </div>";
-      echo "<div class='w-50 bg-dark clickable pl-1' style='color:white;' onclick='loadTopic(".$topicResult['id'].", ".$topicResult['category'].")'>".strip_tags($titleExcerpt)."</div>";
+      echo "<div class='w-50 bg-light clickable pl-1' style='color:white;' onclick='loadTopic(".$topicResult['id'].", ".$topicResult['category'].")'>".strip_tags($titleExcerpt)."</div>";
       echo "<div class='input-group-append'>";
         echo "<button class='btn btn-sm btn-success' id='".$topicTitle."AddTopicButton' onclick='return addTopic(".$topicResult['id'].",\"".$topicTitle."\", ".$root.");' data-toggle='tooltip' data-placement='top' title='Add A Sub-Topic'><i class='fas fa-plus'></i></button>";
         echo "<button class='btn btn-sm btn-danger' id='".$topicTitle."DeleteButton' ";

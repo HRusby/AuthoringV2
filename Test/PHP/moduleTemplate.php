@@ -22,16 +22,17 @@
   $rules = '';
   $messages = '';
 
-  // echo "<div class='row'>";
-  echo "<div class='row h-100 justify-content-center align-items-center my-3'>";
-  echo "<form class='w-75 bg-white border border-light p-3' method='POST' action='../PHP/createModule2.php' id='moduleCreateForm'>";
-  echo "<div class='form-group'><label for='moduleTitle'>Module Title:</label><input type='text' class ='form-control' placeholder='Module Title' id='moduleTitle' name='moduleTitle'/></div>";
-  echo "<div class='form-group'><label for='moduleContent'>Module Content:</label><textarea class='form-control' id='moduleContent' name='moduleContent' placeholder='Module Description' style='resize:vertical;'></textarea></div>";
-  echo "<div class='form-group'><label for='tokenField'>Tags:</label><input type='text' class='form-control' id='tokenField' name='tokenField' placeholder='Select an item or type some text and hit enter!' /></div>";
-  echo "<script>$('#tokenField').tokenfield({autocomplete: {source: [".$tags."], delay: 100}, showAutocompleteOnFocus: true})</script>";
-  echo "<div class='btn-group'><input class='btn btn-primary' type='submit' value='Update Module'/></div>";
-  echo "</form>";
-  echo "</div>"; // Close row container
+  echo "<div class='row justify-content-center align-items-center my-3'>";
+    echo "<div class='w-75 card'>";
+      echo "<form class='p-3 card-body' method='POST' action='../PHP/createModule2.php' id='moduleCreateForm'>";
+        echo "<div class='form-group'><label for='moduleTitle'>Module Title:</label><input type='text' class ='form-control' placeholder='Module Title' id='moduleTitle' name='moduleTitle'/></div>";
+        echo "<div class='form-group'><label for='moduleContent'>Module Content:</label><textarea class='form-control' id='moduleContent' name='moduleContent' placeholder='Module Description' style='resize:vertical;'></textarea></div>";
+        echo "<div class='form-group'><label for='tokenField'>Tags:</label><input type='text' class='form-control' id='tokenField' name='tokenField' placeholder='Select an item or type some text and hit enter!' /></div>";
+          echo "<script>$('#tokenField').tokenfield({autocomplete: {source: [".$tags."], delay: 100}, showAutocompleteOnFocus: true})</script>";
+        echo "<div class='btn-group'><input class='btn btn-primary' type='submit' value='Update Module'/></div>";
+      echo "</form>";
+    echo "</div>"; // Close row container
+  echo "</div>";
 
   echo "<script>";
   echo "var updateValidator = $('#moduleCreateForm').validate({";
@@ -64,7 +65,7 @@
     echo "  ['color', ['color']],";
     echo "  ['para', ['ul', 'ol', 'paragraph']],";
     // echo "  ['height', ['height']],";
-    echo "  ['insert', ['picture', 'link', 'video', 'table']],";
+    echo "  ['insert', ['link', 'video', 'table']],";
     echo "  ['misc', ['undo', 'redo', 'codeview', 'help']]";
     echo "],";
     echo "popover:[],";
