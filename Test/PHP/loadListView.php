@@ -72,7 +72,7 @@
             echo "</div>"; // Close input group append
           echo "</div>"; // Close input group
         echo "</div>"; // Close topic row Div
-        echo "<div class='row collapse ml-3' id='".$topicTitle."TopicList' aria-expanded='false'>";
+        echo "<div class='row collapse ml-3 topicLists".$parentID."' id='".$topicTitle."TopicList' aria-expanded='false'>";
           printTopics($root, $level+1, $topic['id']); // Prints out all of the modules topics.
         // Pass' the current ID, the level it's looking at (second level) and the parent ID as this is top level the parent ID is it's own ID
         echo "</div>"; // close moduleTitleTopicList Div.

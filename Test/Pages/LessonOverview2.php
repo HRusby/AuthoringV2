@@ -195,13 +195,17 @@
         }
         // $.alert('In Move Topic\nTopics Length: '+$('.topics'+$parentID).length);
         $movingTopic = $($('.topics'+$parentID).get($currentIndex)); // The topic the user wants to move
+        $movingTopicList = $($('.topicLists'+$parentID).get($currentIndex));
         $movingID = $movingTopic.find('.listTopicID'+$parentID).val();
         // $.alert('Moving ID: '+$movingID);
         $positionTopic = $($('.topics'+$parentID).get($intendedIndex)); // The topic in the position the user wants to move to
+        $positionTopicList = $($('.topicLists'+$parentID).get($intendedIndex));
         $positionID = $positionTopic.find('.listTopicID'+$parentID).val();
         // $.alert('position ID: '+$positionID);
 
         $movingTopic.insertBefore($positionTopic);
+        $positionTopicList.insertAfter($positionTopic);
+        $movingTopicList.insertAfter($movingTopic);
         // Change button onClick
         $movingTopic.find('.moveUpBtn').attr('onclick', 'moveTopicUp('+($currentIndex-1)+','+($intendedIndex-1)+','+$parentID+');');
         $positionTopic.find('.moveUpBtn').attr('onclick', 'moveTopicUp('+($currentIndex)+','+($intendedIndex)+','+$parentID+');');
@@ -235,13 +239,17 @@
         }
         // $.alert('In Move Topic\nTopics Length: '+$('.topics'+$parentID).length);
         $movingTopic = $($('.topics'+$parentID).get($currentIndex)); // The topic the user wants to move
+        $movingTopicList = $($('.topicLists'+$parentID).get($currentIndex));
         $movingID = $movingTopic.find('.listTopicID'+$parentID).val();
         // $.alert('Moving ID: '+$movingID);
         $positionTopic = $($('.topics'+$parentID).get($intendedIndex)); // The topic in the position the user wants to move to
+        $positionTopicList = $($('.topicLists'+$parentID).get($intendedIndex));
         $positionID = $positionTopic.find('.listTopicID'+$parentID).val();
         // $.alert('position ID: '+$positionID);
 
         $movingTopic.insertAfter($positionTopic);
+        $positionTopicList.insertAfter($positionTopic);
+        $movingTopicList.insertAfter($movingTopic);
         // Change button onClick
         $movingTopic.find('.moveDownBtn').attr('onclick', 'moveTopicDown('+($currentIndex+1)+','+($intendedIndex+1)+','+$parentID+');');
         $positionTopic.find('.moveDownBtn').attr('onclick', 'moveTopicDown('+($currentIndex)+','+($intendedIndex)+','+$parentID+');');
