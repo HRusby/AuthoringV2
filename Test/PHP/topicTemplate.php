@@ -28,12 +28,21 @@
   $topicRelationsStmt->execute();
   $topicRelations = $topicRelationsStmt->get_result()->fetch_assoc();
 
-  $prereqQuery = "SELECT topic_id FROM tpl_tutorial_topic WHERE root=? AND lft<?;";
-  $prereqStmt = $db->stmt_init();
-  $prereqStmt->prepare($prereqQuery);
-  $prereqStmt->bind_param("ii", $moduleID, $topicRelations['rgt']);
-  $prereqStmt->execute();
-  $prereqResult = $prereqStmt->get_result();
+  if($moduleID == $parentID){
+    $prereqQuery = "SELECT topic_id FROM tpl_tutorial_topic WHERE root=?;";
+    $prereqStmt = $db->stmt_init();
+    $prereqStmt->prepare($prereqQuery);
+    $prereqStmt->bind_param("i", $moduleID);
+    $prereqStmt->execute();
+    $prereqResult = $prereqStmt->get_result();
+  }else{
+    $prereqQuery = "SELECT topic_id FROM tpl_tutorial_topic WHERE root=? AND lft<?;";
+    $prereqStmt = $db->stmt_init();
+    $prereqStmt->prepare($prereqQuery);
+    $prereqStmt->bind_param("ii", $moduleID, $topicRelations['rgt']);
+    $prereqStmt->execute();
+    $prereqResult = $prereqStmt->get_result();
+  }
 
   $rules = '';
   $messages = '';
