@@ -373,7 +373,7 @@
 
       function addOption($questionCount, $optionCount){
         if($optionCount > <?php echo $maxOptions; ?> ){
-          alert("No More Options can be added!");
+          $.alert("No More Options can be added!");
           return false;
         }else{
           $newOption = $optionCount+64;
@@ -423,7 +423,7 @@
       function deleteOption($questionCount, $optionCount){
 
         $optionID = $("#q"+$questionCount+"Opt"+$optionCount).find("#q"+$questionCount+"Opt"+$optionCount+"ID").attr('value');
-        alert("OptionID: "+$optionID);
+        // alert("OptionID: "+$optionID);
         // run delete script via AJAX
         $.ajax({
             url:"../PHP/deleteExistingOption.php?o="+$optionID,
@@ -501,8 +501,9 @@
             $("#q"+$currentQuestion).find("#q"+$currentQuestion+'Options').attr('id', 'q'+$newValue+'Options');
             // change id=q1DeleteButton onclick=return deleteQuestion(1);
             var x = $("#q"+$currentQuestion).find('#q'+$currentQuestion+'DeleteButton').attr('onclick');
-            $part1 = x.substr(0, x.indexOf('(')+1);
-            $("#q"+$currentQuestion).find('#q'+$currentQuestion+'DeleteButton').attr('onclick', $part1+$newValue+');');
+            $part1 = x.substr(0, x.indexOf('deleteQuestion(')+15);
+            $part2 = x.substr(x.indexOf(');')+2);
+            $("#q"+$currentQuestion).find('#q'+$currentQuestion+'DeleteButton').attr('onclick', $part1+$newValue+');'+$part2);
             $("#q"+$currentQuestion).find('#q'+$currentQuestion+'DeleteButton').attr('id', 'q'+$newValue+'DeleteButton');
             // change id=q1Title name=q1Title
             $("#q"+$currentQuestion).find("#q"+$currentQuestion+'Title').attr('name', 'q'+$newValue+'Title');
@@ -534,13 +535,15 @@
             // Change id: q1Opt1DeleteButton onClick = return deleteOption(1,1);
             var x = $("#q"+$currentQuestion+"Opt"+$currentOption).find('#q'+$currentQuestion+'Opt'+$currentOption+'DeleteButton').attr('onclick');
             $part1 = x.substr(0, x.indexOf($currentQuestion));
-            $("#q"+$currentQuestion+"Opt"+$currentOption).find('#q'+$currentQuestion+'Opt'+$currentOption+'DeleteButton').attr('onclick', $part1+$intendedQuestion+', '+$currentOption+');');
+            $part2 = x.substr(x.indexOf(');')+2);
+            $("#q"+$currentQuestion+"Opt"+$currentOption).find('#q'+$currentQuestion+'Opt'+$currentOption+'DeleteButton').attr('onclick', $part1+$intendedQuestion+', '+$currentOption+');'+$part2);
+            $("#q"+$currentQuestion+"Opt"+$currentOption).find('#q'+$currentQuestion+'Opt'+$currentOption+'DeleteButton').attr('id', 'q'+$intendedQuestion+'Opt'+$currentOption+'DeleteButton');
             // Change id: q1Opt1Value name: q1Opt1Value
             $("#q"+$currentQuestion+"Opt"+$currentOption).find('#q'+$currentQuestion+'Opt'+$currentOption+'Value').attr('name', 'q'+$intendedQuestion+'Opt'+$currentOption+'Value');
             $("#q"+$currentQuestion+"Opt"+$currentOption).find('#q'+$currentQuestion+'Opt'+$currentOption+'Value').attr('id', 'q'+$intendedQuestion+'Opt'+$currentOption+'Value');
             // Update q1Opt1ID
             $("#q"+$currentQuestion+"Opt"+$currentOption).find('#q'+$currentQuestion+'Opt'+$currentOption+'ID').attr('name', 'q'+$intendedQuestion+'Opt'+$currentOption+'ID');
-            $("#q"+$currentQuestion+"Opt"+$currentOption).find('#q'+$currentQuestion+'Opt'+$currentOption+'Value').attr('id', 'q'+$intendedQuestion+'Opt'+$currentOption+'ID');
+            $("#q"+$currentQuestion+"Opt"+$currentOption).find('#q'+$currentQuestion+'Opt'+$currentOption+'ID').attr('id', 'q'+$intendedQuestion+'Opt'+$currentOption+'ID');
             // Change q1Opt1RadButton
             $("#q"+$currentQuestion+"Opt"+$currentOption).find('#q'+$currentQuestion+'Opt'+$currentOption+'RadButton').attr('id', 'q'+$intendedQuestion+'Opt'+$currentOption+'RadButton');
             // Change q1Opt1Lbl Value as well
