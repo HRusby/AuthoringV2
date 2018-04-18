@@ -168,7 +168,7 @@
           		    // Creates a unique div for each module to contain all that modules displayed details
 
           		    echo "<h1 class='postTitle'>".strip_tags($row['title'])."\n";
-                  echo "<button type = 'button' class='btn btn-danger pull-right' onclick='$.confirm({title: \"Are you sure?\",content: \"test\",buttons: {confirm: function() { location.href=\"../PHP/deletePost.php?t=".$row['id']."\";},cancel: function() { $.alert(\"Cancelled\");}}});'>\n";
+                  echo "<button type = 'button' class='btn btn-danger pull-right' onclick='$.confirm({title: \"Are you sure?\",content: \"Deletion Cannot be Undone!\",buttons: {yes: function() { location.href=\"../PHP/deletePost.php?t=".$row['id']."\";},no: function() { $.alert(\"Cancelled\");}}});'>\n";
                   echo "<span class='glyphicon glyphicon-trash'></span>\n";
                   echo "</button>\n</h1>\n";
 

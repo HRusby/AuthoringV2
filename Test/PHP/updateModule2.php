@@ -34,7 +34,7 @@
       if(mysqli_num_rows($tagExistsResult) <= 0){
         // echo $t;
         // echo "\nNew Tag Found\n";
-        $addNewTagQuery = "INSERT INTO tpl_tag VALUES (NULL, ?, ?, '1', CURRENT_TIMESTAMP, NULL);";
+        $addNewTagQuery = "INSERT INTO tpl_tag VALUES (NULL, ?, ?, '0', CURRENT_TIMESTAMP, NULL);";
         $addNewTagStmt = $db->stmt_init();
         $addNewTagStmt->prepare($addNewTagQuery);
         $addNewTagStmt->bind_param("is", $userid, $t);

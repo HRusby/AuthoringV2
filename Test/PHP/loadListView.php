@@ -52,7 +52,7 @@
           $titleExcerpt = substr($topic['title'],0,27)."...";
         }
 
-        echo "<div class='row ml-2 my-2 w-100 topics".$parentID."' style='height:50px;' id='".$topicTitle."Row'>";
+        echo "<div class='row ml-2 mb-2 w-100 topics".$parentID."' style='height:50px;' id='".$topicTitle."Row'>";
           echo "<div class='input-group pr-1'>";
             echo "<div class='input-group-prepend'>";
               echo "<button data-toggle='collapse' data-target='#".$topicTitle."TopicList' aria-expanded='false'  class = 'btn btn-sm collapseButton pull-left'><i class='fas fa-angle-right'></i></button>";
@@ -93,7 +93,7 @@
   $moduleCount = 0;
   echo "\n<div class='mb-5 card h-100'>"; // Div to ensure padding around all modules/topics.
     echo "<div class='card-header text-center'>";
-      echo "<button class='btn btn-success' id='addModuleButton' onclick='return addModule();' data-toggle='tooltip' data-placement='top' title='Create a New Module'><i class='fas fa-plus'></i> Create A New Module</button>";
+      echo "<button class='btn btn-success' id='addModuleButton' type='button' onclick='return addModule();' data-toggle='tooltip' data-placement='top' title='Create a New Module'><i class='fas fa-plus'></i> Create A New Module</button>";
     echo "</div>"; // Close card-header
     echo "<div id='allModules' class='ml-1 w-100 card-body'>";
       while($module = $ModulesResult->fetch_assoc()){
@@ -105,7 +105,7 @@
         }
         $moduleTitle = str_replace(" ", "",$module['title']);
 
-        echo "<div class='row my-2 w-100' style='height:50px;' id='".$moduleTitle."Row'>";
+        echo "<div class='row mb-2 w-100' style='height:50px;' id='".$moduleTitle."Row'>";
           echo "<div class='input-group pr-1'>";
             echo "<div class='input-group-prepend'>";
               echo "<button data-toggle='collapse' data-target='#".$moduleTitle."TopicList' aria-expanded='false'  class = 'btn btn-sm collapseButton pull-left'><i class='fas fa-angle-right'></i></button>";
@@ -121,7 +121,7 @@
           echo "</div>"; // Close input group
         echo "</div>"; // Close module row Div
         echo "<div class='row collapse' id='".$moduleTitle."TopicList' aria-expanded='false'>";
-        printTopics($module['id'], 2, $module['id']); // Prints out all of the modules topics.
+          printTopics($module['id'], 2, $module['id']); // Prints out all of the modules topics.
         // Pass' the current ID, the level it's looking at (second level) and the parent ID as this is top level the parent ID is it's own ID
         echo "</div>"; // close moduleTitleTopicList Div.
         $moduleCount++;

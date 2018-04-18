@@ -34,7 +34,7 @@
   // echo "<div class='row'>";
   $moduleTitle = str_replace(" ", "",$module['title']);
   echo "<div class='row justify-content-center align-items-center my-1'>";
-    echo "<div class='card w-75'>";
+    echo "<div class='card w-75 my-3'>";
       echo "<div class='card-body'>";
         echo "<form class='p-3' method='POST' action='../PHP/updateModule2.php?m=".$moduleID."' id='moduleUpdateForm'>";
         echo "<div class='form-group'><label for='moduleTitle' class='w-100'>Module Title:";

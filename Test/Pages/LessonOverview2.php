@@ -167,14 +167,14 @@
       });
 
       $(document).on('submit', '#quizForm', function(){
-        alert('Submitting Quiz');
+        $.alert('Submitting Quiz');
         $.ajax({
             url:$(this).attr('action'),
             type:$(this).attr('method'),
             data: "'x=0&"+$(this).serialize()+"'",
             success:function($result){
-                alert("Quiz Saved!");
-                alert($result);
+                $.alert("Quiz Saved!");
+                // alert($result);
 
             },
             error: function(xhr, textstatus, errorthrown){
@@ -423,7 +423,7 @@
       function deleteOption($questionCount, $optionCount){
 
         $optionID = $("#q"+$questionCount+"Opt"+$optionCount).find("#q"+$questionCount+"Opt"+$optionCount+"ID").attr('value');
-        // alert("OptionID: "+$optionID);
+        alert("OptionID: "+$optionID);
         // run delete script via AJAX
         $.ajax({
             url:"../PHP/deleteExistingOption.php?o="+$optionID,
@@ -433,15 +433,15 @@
                 $("#q"+$questionCount+"Opt"+$optionCount).html('');
                 $("#q"+$questionCount+"Opt"+$optionCount).remove();
                 updateOptionIndexes($questionCount, $optionCount);
-                return false;
+                return;
             },
             error: function(xhr, textstatus, errorthrown){
               alert('Error\nState: '+xhr.readyState+'\nStatus: '+textstatus+'\nError: '+errorthrown);
-              return false;
+              return;
             }
         });
 
-        return false;
+        return;
       }
 
       function deleteNewOption($questionCount, $optionCount){
@@ -449,13 +449,13 @@
         $("#q"+$questionCount+"Opt"+$optionCount).remove();
         updateOptionIndexes($questionCount, $optionCount);
         $.alert('Option has been successfully Deleted');
-        return false;
+        return;
       }
 
       function deleteQuestion($questionCount){
 
         $questionID = $("#q"+$questionCount).find("#q"+$questionCount+"ID").attr('value');
-        alert("questionID: "+$questionID);
+        // alert("questionID: "+$questionID);
         // run delete script via AJAX
         $.ajax({
             url:"../PHP/deleteExistingQuestion.php?q="+$questionID,
@@ -465,14 +465,14 @@
                 $("#q"+$questionCount).html('');
                 $("#q"+$questionCount).remove();
                 updateQuestionIndexes($questionCount);
-                return false;
+                return;
             },
             error: function(xhr, textstatus, errorthrown){
               alert('Error\nState: '+xhr.readyState+'\nStatus: '+textstatus+'\nError: '+errorthrown);
-              return false;
+              return;
             }
         });
-        return false;
+        return;
       }
 
       function deleteNewQuestion($questionCount){
@@ -480,7 +480,7 @@
         $("#q"+$questionCount).remove();
         updateQuestionIndexes($questionCount);
         $.alert("Question has been successfully deleted!");
-        return false;
+        return;
       }
 
       function updateQuestionIndexes($questionCount){
@@ -566,14 +566,16 @@
           if($("#q"+$questionCount+"Opt"+$currentOption).length){
             // Change id: q1Opt1DeleteButton onClick = return deleteOption(1,1);
             var x = $("#q"+$questionCount+"Opt"+$currentOption).find('#q'+$questionCount+'Opt'+$currentOption+'DeleteButton').attr('onclick');
-            $part1 = x.substr(0, x.indexOf(',')+1);
-            $("#q"+$questionCount+"Opt"+$currentOption).find('#q'+$questionCount+'Opt'+$currentOption+'DeleteButton').attr('onclick', $part1+$newValue+');');
+            $part1 = x.substr(0, x.indexOf('deleteOption('+$questionCount+',')+15);
+            $part2 = x.substr(x.indexOf(');')+2);
+            $("#q"+$questionCount+"Opt"+$currentOption).find('#q'+$questionCount+'Opt'+$currentOption+'DeleteButton').attr('onclick', $part1+$newValue+');'+$part2);
+            $("#q"+$questionCount+"Opt"+$currentOption).find('#q'+$questionCount+'Opt'+$currentOption+'DeleteButton').attr('id', 'q'+$questionCount+'Opt'+$newValue+'DeleteButton');
             // Change id: q1Opt1Value name: q1Opt1Value
             $("#q"+$questionCount+"Opt"+$currentOption).find('#q'+$questionCount+'Opt'+$currentOption+'Value').attr('name', 'q'+$questionCount+'Opt'+$newValue+'Value');
             $("#q"+$questionCount+"Opt"+$currentOption).find('#q'+$questionCount+'Opt'+$currentOption+'Value').attr('id', 'q'+$questionCount+'Opt'+$newValue+'Value');
             // Update q1Opt1ID
             $("#q"+$questionCount+"Opt"+$currentOption).find('#q'+$questionCount+'Opt'+$currentOption+'ID').attr('name', 'q'+$questionCount+'Opt'+$newValue+'ID');
-            $("#q"+$questionCount+"Opt"+$currentOption).find('#q'+$questionCount+'Opt'+$currentOption+'Value').attr('id', 'q'+$questionCount+'Opt'+$newValue+'ID');
+            $("#q"+$questionCount+"Opt"+$currentOption).find('#q'+$questionCount+'Opt'+$currentOption+'ID').attr('id', 'q'+$questionCount+'Opt'+$newValue+'ID');
             // Change q1Opt1RadButton
             $("#q"+$questionCount+"Opt"+$currentOption).find('#q'+$questionCount+'Opt'+$currentOption+'RadButton').attr('id', 'q'+$questionCount+'Opt'+$newValue+'RadButton');
             // Change q1Opt1Lbl Value as well
@@ -596,11 +598,11 @@
     <title>LessonOverview2</title>
   </head>
   <body>
-    <nav class="navbar bg-light fixed-top border-bottom border-light" style='box-shadow:1px 1px 1px grey;'>
-      <span class="navbar-brand mb-0 h1"><a href="../../php/"><img src='../../php/images/logo.png' alt='Topolor'></a></span>
+    <nav class="navbar bg-light mb-0 fixed-top border-bottom border-light" style='box-shadow:1px 1px 1px grey;'>
+      <span class="navbar-brand mb-0 py-1"><a href="../../php/"><img src='../../php/images/logo.png' alt='Topolor'></a></span>
     </nav>
     <div class='container-fluid' id='authoringContainer'>
-      <div class='row w-100 mb-3' id='bodyContainer'>
+      <div class='row w-100 h-100' id='bodyContainer'>
         <div class='col-md-3 pb-5 h-100 w-100 border-right border-dark bg-light position-fixed' id ='listView'>
           <script>
             $loadURL = "../PHP/loadListView.php?u="+<?php echo $userid; ?>;

@@ -104,42 +104,6 @@
         }
     }
 
-//     $rgtQuery = "UPDATE tpl_tutorial_topic SET rgt = ? WHERE topic_id = ?;";
-//     $rgtStmt = $db->stmt_init();
-//     $rgtStmt->prepare($rgtQuery);
-//     $rgtStmt->bind_param("ii", $prgt, $parentID);
-//     $rgtStmt->execute();
-//     $rgtStmt->close();
-//     // Update the parent rgt value
-
-//     // Get level 2 topic lft and rgt values
-//     $baseQuery = "SELECT * FROM tpl_tutorial_topic WHERE root = ? AND level = 2 AND lft < ? AND rgt >= ?;";
-//     // Finds the base topic (level 2) that this subtopic will belong to (i.e. its lft and rgt values are between the topic lft and rgt)
-//     $baseStmt = $db->stmt_init();
-//     $baseStmt->prepare($baseQuery);
-//     $baseStmt->bind_param("iii", $rootID, $lft, $rgt);
-//     $baseStmt->execute();
-//     $baseTemp = $baseStmt->get_result();
-//     $baseResult = $baseTemp->fetch_assoc();
-//     $baseID = $baseResult['topic_id'];
-//     $baseRgt = $baseResult['rgt'] + 2; // Accomodates for the two new fields
-//     $baseStmt->close();
-//     // Find the base topic this subtopic belongs to
-
-
-//     $updateContainersQuery = "UPDATE tpl_tutorial_topic SET rgt = rgt+2 WHERE lft < ? AND rgt >= ? AND topic_id != ?;";
-//     $updateContainerStmt = $db->stmt_init();
-//     $updateContainerStmt->prepare($updateContainersQuery);
-//     $updateContainerStmt->bind_param("iii", $lft, $lft, $parentID);
-//     $updateContainerStmt->execute();
-//     // Select all records where lft < this.lft and rgt >= this.lft and make rgt +=2
-
-//     $updateOtherQuery = "UPDATE tpl_tutorial_topic SET rgt = rgt+2, lft = lft+2 WHERE lft >= ? and rgt > ?;";
-//     $updateOtherStmt = $db->stmt_init();
-//     $updateOtherStmt->prepare($updateOtherQuery);
-//     $updateOtherStmt->bind_param("ii", $rgt, $rgt);
-//     $updateOtherStmt->execute();
-//     // Select all records where lft >= this.rgt and rgt > this.rgt and make rgt += 2 and lft += 2
 
 //     // Starts from sub topic rgt as this may clash with a pre-existing value
 
