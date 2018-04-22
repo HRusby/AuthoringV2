@@ -1,0 +1,27 @@
+body {
+   	background:url('tile.png');
+		background-color: #cccccc;
+    margin-top:50px;
+}
+
+#allModules{
+  overflow-y: scroll;
+}
+
+#listView{
+  margin-bottom:60px;
+}
+
+.title{
+  color: #18B193;
+  font-style: bold;
+}
+
+.clickable{
+  cursor: pointer;
+}
+
+.error{
+  color: red;
+  text-align:center;
+}
